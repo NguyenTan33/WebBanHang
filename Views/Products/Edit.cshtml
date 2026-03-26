@@ -1,0 +1,994 @@
+﻿@model WebBanHang.Models.Product
+@{
+    ViewData["Title"] = "Chỉnh sửa sản phẩm";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chỉnh sửa sản phẩm – Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --green-dark: #1a7a2e;
+            --green-main: #2c9e47;
+            --green-light: #e8f7ec;
+            --green-accent: #38b558;
+            --yellow: #ffd600;
+            --red: #e82828;
+            --orange: #ff6b00;
+            --sidebar-w: 224px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: #f0f2f0;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ═══ SIDEBAR ═══ */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--green-dark);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sb-brand {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+
+            .sb-brand .name {
+                font-size: 19px;
+                font-weight: 900;
+                color: #fff;
+                line-height: 1;
+            }
+
+                .sb-brand .name span {
+                    color: var(--yellow);
+                }
+
+            .sb-brand .tag {
+                font-size: 10px;
+                color: rgba(255,255,255,.6);
+                font-style: italic;
+                margin-top: 2px;
+            }
+
+        .sb-admin-badge {
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255,255,255,.13);
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 11px;
+            color: rgba(255,255,255,.85);
+            font-weight: 600;
+        }
+
+        .sb-section {
+            padding: 16px 14px 5px;
+            font-size: 10px;
+            font-weight: 800;
+            color: rgba(255,255,255,.35);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .sb-nav {
+            list-style: none;
+            padding: 0 8px;
+        }
+
+            .sb-nav li a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 9px 12px;
+                border-radius: 9px;
+                color: rgba(255,255,255,.72);
+                font-size: 13px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: background .15s, color .15s;
+                margin-bottom: 2px;
+            }
+
+                .sb-nav li a i {
+                    font-size: 16px;
+                    width: 20px;
+                    text-align: center;
+                    flex-shrink: 0;
+                }
+
+                .sb-nav li a:hover {
+                    background: rgba(255,255,255,.1);
+                    color: #fff;
+                }
+
+                .sb-nav li a.active {
+                    background: var(--green-main);
+                    color: #fff;
+                }
+
+        /* ═══ MAIN ═══ */
+        .main-wrap {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            background: #fff;
+            padding: 13px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            gap: 12px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .topbar-title {
+            font-size: 17px;
+            font-weight: 900;
+            color: var(--green-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #888;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 6px 14px;
+            transition: background .15s, color .15s;
+            white-space: nowrap;
+        }
+
+            .btn-back:hover {
+                background: var(--green-light);
+                color: var(--green-dark);
+            }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--green-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        /* BREADCRUMB */
+        .breadcrumb-bar {
+            padding: 12px 28px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #bbb;
+        }
+
+            .breadcrumb-bar a {
+                color: #bbb;
+                text-decoration: none;
+            }
+
+                .breadcrumb-bar a:hover {
+                    color: var(--green-main);
+                }
+
+            .breadcrumb-bar .cur {
+                color: var(--green-dark);
+                font-weight: 700;
+            }
+
+        /* CONTENT */
+        .content {
+            padding: 16px 28px 40px;
+            flex: 1;
+        }
+
+        /* GRID */
+        .page-grid {
+            display: grid;
+            grid-template-columns: 1fr 310px;
+            gap: 18px;
+            max-width: 900px;
+        }
+
+        /* CARDS */
+        .fcard {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 14px rgba(0,0,0,.07);
+            overflow: hidden;
+        }
+
+        .fcard-head {
+            padding: 15px 22px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .fcard-head-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .fcard-head i {
+            color: var(--green-main);
+            font-size: 16px;
+        }
+
+        .fcard-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #1a1a1a;
+        }
+
+        .fcard-body {
+            padding: 22px;
+        }
+
+        .id-chip {
+            background: #f0f0f0;
+            color: #999;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* FIELDS */
+        .field {
+            margin-bottom: 18px;
+        }
+
+            .field:last-child {
+                margin-bottom: 0;
+            }
+
+        .flabel {
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .flabel .req {
+                color: var(--red);
+            }
+
+        .finput {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            outline: none;
+            background: #fafafa;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+        }
+
+            .finput:focus {
+                border-color: var(--green-main);
+                box-shadow: 0 0 0 3px rgba(44,158,71,.11);
+                background: #fff;
+            }
+
+            .finput:disabled {
+                background: #f4f4f4;
+                color: #aaa;
+                cursor: not-allowed;
+                border-color: #eee;
+            }
+
+            .finput.changed {
+                border-color: var(--orange);
+                box-shadow: 0 0 0 3px rgba(255,107,0,.1);
+            }
+
+        .ferror {
+            font-size: 12px;
+            color: var(--red);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fhint {
+            font-size: 11.5px;
+            color: #bbb;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* suffix */
+        .suffix-wrap {
+            position: relative;
+        }
+
+            .suffix-wrap .finput {
+                padding-right: 38px;
+            }
+
+        .suffix {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--red);
+            pointer-events: none;
+        }
+
+        /* two-col */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* CHANGE BADGE */
+        .change-badge {
+            display: none;
+            background: #fff8e1;
+            color: #b45309;
+            border: 1px solid #fed7aa;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 11.5px;
+            font-weight: 700;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .change-badge.show {
+                display: inline-flex;
+            }
+
+        /* IMAGE */
+        .img-preview-box {
+            width: 100%;
+            aspect-ratio: 4/3;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--green-light);
+            border: 1.5px solid #e8e8e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            position: relative;
+            font-size: 52px;
+        }
+
+            .img-preview-box img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                position: absolute;
+                inset: 0;
+            }
+
+        .img-overlay-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,.55);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 5px 11px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            transition: background .15s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .img-overlay-btn:hover {
+                background: rgba(0,0,0,.78);
+            }
+
+        .upload-zone {
+            border: 2px dashed #d4d4d4;
+            border-radius: 12px;
+            padding: 16px 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+            background: #fafafa;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+            .upload-zone:hover {
+                border-color: var(--green-main);
+                background: var(--green-light);
+            }
+
+            .upload-zone input[type="file"] {
+                position: absolute;
+                inset: 0;
+                opacity: 0;
+                cursor: pointer;
+                width: 100%;
+                height: 100%;
+            }
+
+        .uz-icon {
+            font-size: 24px;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .uz-text {
+            font-size: 13px;
+            color: #888;
+            font-weight: 600;
+        }
+
+        .uz-sub {
+            font-size: 11px;
+            color: #bbb;
+            margin-top: 3px;
+        }
+
+        .or-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ccc;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+
+            .or-line::before, .or-line::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: #eee;
+            }
+
+        /* ACTIONS */
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            padding-top: 4px;
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 12px;
+            border-radius: 25px;
+            border: none;
+            background: linear-gradient(135deg, var(--green-main), var(--green-accent));
+            color: #fff;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            transition: transform .15s, box-shadow .2s;
+            box-shadow: 0 3px 12px rgba(44,158,71,.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+            .btn-save:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 5px 18px rgba(44,158,71,.38);
+            }
+
+            .btn-save:active {
+                transform: translateY(0);
+            }
+
+        .btn-cancel {
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1.5px solid #e0e0e0;
+            background: #fff;
+            color: #777;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: background .15s;
+        }
+
+            .btn-cancel:hover {
+                background: #f5f5f5;
+                color: #444;
+            }
+
+        /* QUICK ACTIONS card */
+        .quick-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 14px rgba(0,0,0,.07);
+            overflow: hidden;
+        }
+
+        .quick-card-head {
+            padding: 13px 18px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            font-weight: 800;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .quick-card-body {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quick-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background .15s;
+        }
+
+            .quick-btn i {
+                font-size: 16px;
+                width: 20px;
+                text-align: center;
+                flex-shrink: 0;
+            }
+
+        .qb-list {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+            .qb-list:hover {
+                background: #d0f0d8;
+            }
+
+        .qb-del {
+            background: #fff0f0;
+            color: var(--red);
+        }
+
+            .qb-del:hover {
+                background: #ffe0e0;
+            }
+
+        .qb-detail {
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+
+            .qb-detail:hover {
+                background: #dbeafe;
+            }
+
+        /* DIFF SUMMARY */
+        .diff-summary {
+            background: #fffbeb;
+            border: 1.5px solid #fde68a;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: none;
+        }
+
+            .diff-summary.show {
+                display: block;
+            }
+
+        .diff-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #b45309;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .diff-row {
+            font-size: 12px;
+            color: #92400e;
+            padding: 3px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .diff-row .old {
+                text-decoration: line-through;
+                color: #d97706;
+            }
+
+            .diff-row .new {
+                color: var(--green-dark);
+                font-weight: 700;
+            }
+
+        @@media (max-width: 860px) {
+            .page-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-wrap {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sb-brand">
+            <div class="name">Bách hóa <span>XANH</span></div>
+            <div class="tag">Siêu thị gần nhà, giá tiết kiệm</div>
+            <div class="sb-admin-badge"><i class="bi bi-shield-fill-check"></i> Admin Panel</div>
+        </div>
+        <div class="sb-section">Tổng quan</div>
+        <ul class="sb-nav">
+            <li><a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="#"><i class="bi bi-graph-up-arrow"></i> Thống kê</a></li>
+        </ul>
+        <div class="sb-section">Quản lý</div>
+        <ul class="sb-nav">
+            <li><a asp-action="Index" class="active"><i class="bi bi-box-seam-fill"></i> Sản phẩm</a></li>
+            <li><a href="#"><i class="bi bi-tags-fill"></i> Danh mục</a></li>
+            <li><a href="#"><i class="bi bi-cart-fill"></i> Đơn hàng</a></li>
+            <li><a href="#"><i class="bi bi-people-fill"></i> Khách hàng</a></li>
+            <li><a href="#"><i class="bi bi-star-fill"></i> Đánh giá</a></li>
+        </ul>
+        <div class="sb-section">Hệ thống</div>
+        <ul class="sb-nav">
+            <li><a href="#"><i class="bi bi-gear-fill"></i> Cài đặt</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill"></i> Trang chủ</a></li>
+        </ul>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main-wrap">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <a asp-action="Index" class="btn-back"><i class="bi bi-arrow-left"></i> Quay lại</a>
+                <div class="topbar-title">
+                    <i class="bi bi-pencil-square"></i> Chỉnh sửa sản phẩm
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span class="change-badge" id="changeBadge">
+                    <i class="bi bi-pencil-fill"></i> Có thay đổi chưa lưu
+                </span>
+                <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                <span style="font-size:13px;font-weight:700;color:#444;">Admin</span>
+            </div>
+        </div>
+
+        <!-- BREADCRUMB -->
+        <div class="breadcrumb-bar">
+            <i class="bi bi-house-fill" style="font-size:11px;"></i>
+            <a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+            <i class="bi bi-chevron-right" style="font-size:10px;"></i>
+            <a asp-action="Index">Sản phẩm</a>
+            <i class="bi bi-chevron-right" style="font-size:10px;"></i>
+            <span class="cur">Chỉnh sửa #@Model.Id</span>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" id="editForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                <div class="page-grid">
+
+                    <!-- LEFT -->
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+
+                        <!-- Main info card -->
+                        <div class="fcard">
+                            <div class="fcard-head">
+                                <div class="fcard-head-left">
+                                    <i class="bi bi-pencil-fill"></i>
+                                    <div class="fcard-title">Thông tin sản phẩm</div>
+                                </div>
+                                <span class="id-chip">#@Model.Id</span>
+                            </div>
+                            <div class="fcard-body">
+
+                                <!-- ID (readonly) -->
+                                <div class="field">
+                                    <div class="flabel"><i class="bi bi-hash"></i> Mã sản phẩm</div>
+                                    <input class="finput" value="#@Model.Id" disabled />
+                                    <div class="fhint"><i class="bi bi-lock-fill"></i> Mã không thể thay đổi</div>
+                                </div>
+
+                                <!-- Name -->
+                                <div class="field">
+                                    <div class="flabel"><i class="bi bi-type"></i> Tên sản phẩm <span class="req">*</span></div>
+                                    <input asp-for="Name" class="finput" id="fName"
+                                           data-orig="@Model.Name"
+                                           oninput="trackChange(this)" />
+                                    <span asp-validation-for="Name" class="ferror"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                                </div>
+
+                                <!-- Price + Amount -->
+                                <div class="two-col">
+                                    <div class="field" style="margin:0;">
+                                        <div class="flabel"><i class="bi bi-currency-dollar"></i> Giá bán <span class="req">*</span></div>
+                                        <div class="suffix-wrap">
+                                            <input asp-for="Price" class="finput" type="number" min="0" step="500"
+                                                   id="fPrice" data-orig="@Model.Price"
+                                                   oninput="trackChange(this)" />
+                                            <span class="suffix">₫</span>
+                                        </div>
+                                        <span asp-validation-for="Price" class="ferror"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                                    </div>
+                                    <div class="field" style="margin:0;">
+                                        <div class="flabel"><i class="bi bi-boxes"></i> Tồn kho <span class="req">*</span></div>
+                                        <input asp-for="Amount" class="finput" type="number" min="0"
+                                               id="fAmount" data-orig="@Model.Amount"
+                                               oninput="trackChange(this)" />
+                                        <span asp-validation-for="Amount" class="ferror"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Diff summary -->
+                        <div class="diff-summary" id="diffSummary">
+                            <div class="diff-title"><i class="bi bi-pencil-fill"></i> Thay đổi so với ban đầu</div>
+                            <div id="diffRows"></div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save">
+                                <i class="bi bi-check-circle-fill"></i> Lưu thay đổi
+                            </button>
+                            <a asp-action="Index" class="btn-cancel">
+                                <i class="bi bi-x-lg"></i> Huỷ
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+
+                        <!-- Image card -->
+                        <div class="fcard">
+                            <div class="fcard-head">
+                                <div class="fcard-head-left">
+                                    <i class="bi bi-image-fill"></i>
+                                    <div class="fcard-title">Hình ảnh</div>
+                                </div>
+                            </div>
+                            <div class="fcard-body">
+
+                                <div class="img-preview-box" id="previewBox">
+                                    <span id="previewPh" style="@(!string.IsNullOrWhiteSpace(Model.Image) ? "display:none;" : "")">🛒</span>
+                                    <img id="previewImg" alt="preview"
+                                         src="@Model.Image"
+                                         style="@(string.IsNullOrWhiteSpace(Model.Image) ? "display:none;" : "")"
+                                         onerror="this.style.display='none';document.getElementById('previewPh').style.display='block';" />
+                                    <button type="button" class="img-overlay-btn" onclick="document.getElementById('fileInput').click()">
+                                        <i class="bi bi-camera-fill"></i> Đổi ảnh
+                                    </button>
+                                </div>
+
+                                <div class="upload-zone" id="uploadZone">
+                                    <input type="file" name="ImageFile" accept="image/*"
+                                           onchange="onFilePick(event)" id="fileInput" />
+                                    <div class="uz-icon"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+                                    <div class="uz-text">Tải ảnh mới lên</div>
+                                    <div class="uz-sub">PNG · JPG · WEBP – Tối đa 5 MB</div>
+                                </div>
+
+                                <div class="or-line">hoặc nhập URL</div>
+
+                                <div class="field" style="margin:0;">
+                                    <div class="flabel"><i class="bi bi-link-45deg"></i> Link hình ảnh</div>
+                                    <input asp-for="Image" class="finput" id="fImage"
+                                           placeholder="https://..."
+                                           data-orig="@Model.Image"
+                                           oninput="onUrlInput(this.value); trackChange(this)" />
+                                    <div class="fhint">Nhập URL mới để thay đổi ảnh</div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Quick actions card -->
+                        <div class="quick-card">
+                            <div class="quick-card-head">
+                                <i class="bi bi-lightning-fill" style="color:var(--yellow);"></i> Thao tác nhanh
+                            </div>
+                            <div class="quick-card-body">
+                                <a asp-action="Index" class="quick-btn qb-list">
+                                    <i class="bi bi-list-ul"></i> Về danh sách
+                                </a>
+                                <a asp-action="Details" asp-route-id="@Model.Id" class="quick-btn qb-detail">
+                                    <i class="bi bi-eye-fill"></i> Xem chi tiết
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@Model.Id" class="quick-btn qb-del">
+                                    <i class="bi bi-trash3-fill"></i> Xoá sản phẩm này
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* ── Image preview ── */
+        function showPreview(src) {
+            const img = document.getElementById('previewImg');
+            const ph  = document.getElementById('previewPh');
+            img.src = src;
+            img.style.display = 'block';
+            ph.style.display  = 'none';
+            img.onerror = () => { img.style.display='none'; ph.style.display='block'; };
+        }
+        function onFilePick(e) {
+            const f = e.target.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = ev => showPreview(ev.target.result);
+            r.readAsDataURL(f);
+            markChanged();
+        }
+        function onUrlInput(v) {
+            if (v.trim()) showPreview(v.trim());
+        }
+
+        // drag highlight
+        const uz = document.getElementById('uploadZone');
+        uz.addEventListener('dragover',  e => { e.preventDefault(); uz.style.borderColor='var(--green-main)'; uz.style.background='var(--green-light)'; });
+        uz.addEventListener('dragleave', ()=> { uz.style.borderColor=''; uz.style.background=''; });
+        uz.addEventListener('drop',      ()=> { uz.style.borderColor=''; uz.style.background=''; });
+
+        /* ── Change tracking ── */
+        const TRACKED = ['fName','fPrice','fAmount','fImage'];
+        const LABELS  = { fName:'Tên sản phẩm', fPrice:'Giá bán', fAmount:'Tồn kho', fImage:'Hình ảnh' };
+
+        function trackChange(el) {
+            const orig = el.dataset.orig ?? '';
+            const changed = el.value.toString() !== orig.toString();
+            el.classList.toggle('changed', changed);
+            renderDiff();
+        }
+
+        function renderDiff() {
+            const rows = [];
+            TRACKED.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const orig = el.dataset.orig ?? '';
+                if (el.value.toString() !== orig.toString()) {
+                    rows.push({ label: LABELS[id], old: orig || '(trống)', newVal: el.value || '(trống)' });
+                }
+            });
+            const diffBox  = document.getElementById('diffSummary');
+            const diffRows = document.getElementById('diffRows');
+            if (rows.length === 0) {
+                diffBox.classList.remove('show');
+                document.getElementById('changeBadge').classList.remove('show');
+                return;
+            }
+            diffBox.classList.add('show');
+            document.getElementById('changeBadge').classList.add('show');
+            diffRows.innerHTML = rows.map(r =>
+                `<div class="diff-row">
+                    <i class="bi bi-arrow-right-short"></i>
+                    <strong>${r.label}:</strong>
+                    <span class="old">${r.old}</span>
+                    <i class="bi bi-arrow-right" style="font-size:10px;color:#ccc;"></i>
+                    <span class="new">${r.newVal}</span>
+                </div>`
+            ).join('');
+        }
+
+        function markChanged() {
+            document.getElementById('changeBadge').classList.add('show');
+        }
+
+        // Warn before leaving if unsaved
+        let formDirty = false;
+        document.getElementById('editForm').addEventListener('input', () => formDirty = true);
+        document.getElementById('editForm').addEventListener('submit', () => formDirty = false);
+        window.addEventListener('beforeunload', e => {
+            if (formDirty) { e.preventDefault(); e.returnValue = ''; }
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>

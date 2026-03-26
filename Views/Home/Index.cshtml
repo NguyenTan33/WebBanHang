@@ -1,0 +1,1331 @@
+﻿@page
+@{
+    Layout = null;
+}
+@{
+    int role = Convert.ToInt32(ViewBag.Role ?? 0);
+}
+@if (role >=0)
+{
+    <!DOCTYPE html>
+    <html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bách Hóa Xanh - Siêu thị gần nhà, giá tiết kiệm</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+        <style>
+            :root {
+                --green-dark: #1a7a2e;
+                --green-main: #2c9e47;
+                --green-light: #e8f7ec;
+                --green-accent: #38b558;
+                --orange-flash: #ff6b00;
+                --yellow-sale: #ffd600;
+                --pink-promo: #e91e8c;
+                --red-badge: #e82828;
+                --gray-text: #444;
+                --gray-light: #f5f5f5;
+                --white: #fff;
+                --radius: 10px;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Be Vietnam Pro', sans-serif;
+                background: #f0f2f0;
+                color: var(--gray-text);
+            }
+
+            /* ===== TOPBAR ===== */
+            .topbar {
+                background: var(--green-dark);
+                padding: 6px 0;
+                font-size: 12px;
+                color: rgba(255,255,255,0.85);
+            }
+
+                .topbar a {
+                    color: rgba(255,255,255,0.85);
+                    text-decoration: none;
+                }
+
+                    .topbar a:hover {
+                        color: #fff;
+                    }
+
+            /* ===== NAVBAR ===== */
+            .main-navbar {
+                background: var(--green-main);
+                padding: 10px 0;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                box-shadow: 0 2px 12px rgba(44,158,71,0.25);
+            }
+
+            .logo-wrap .brand-name {
+                font-size: 22px;
+                font-weight: 900;
+                color: #fff;
+                line-height: 1;
+            }
+
+                .logo-wrap .brand-name span {
+                    color: var(--yellow-sale);
+                }
+
+            .logo-wrap .tagline {
+                font-size: 10px;
+                color: rgba(255,255,255,0.8);
+                font-style: italic;
+            }
+
+            .search-bar {
+                position: relative;
+            }
+
+                .search-bar input {
+                    width: 100%;
+                    padding: 10px 50px 10px 18px;
+                    border-radius: 25px;
+                    border: 2px solid transparent;
+                    font-size: 14px;
+                    font-family: 'Be Vietnam Pro', sans-serif;
+                    outline: none;
+                    transition: border-color .2s;
+                }
+
+                    .search-bar input:focus {
+                        border-color: var(--yellow-sale);
+                    }
+
+                .search-bar button {
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 46px;
+                    background: var(--green-dark);
+                    border: none;
+                    border-radius: 0 25px 25px 0;
+                    color: #fff;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: background .2s;
+                }
+
+                    .search-bar button:hover {
+                        background: #145520;
+                    }
+
+            .location-btn {
+                background: rgba(255,255,255,0.18);
+                border: 1.5px solid rgba(255,255,255,0.45);
+                border-radius: 8px;
+                padding: 8px 14px;
+                color: #fff;
+                font-size: 13px;
+                cursor: pointer;
+                white-space: nowrap;
+                transition: background .2s;
+            }
+
+                .location-btn:hover {
+                    background: rgba(255,255,255,0.28);
+                }
+
+            .nav-action-btn {
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 13px;
+                font-weight: 600;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                cursor: pointer;
+                padding: 0 8px;
+            }
+
+                .nav-action-btn i {
+                    font-size: 20px;
+                }
+
+            .cart-badge {
+                background: var(--yellow-sale);
+                color: var(--green-dark);
+                border-radius: 50%;
+                font-size: 10px;
+                font-weight: 800;
+                width: 18px;
+                height: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: -6px;
+                right: -2px;
+            }
+
+            /* ===== CATEGORY NAV ===== */
+            .cat-nav {
+                background: var(--green-dark);
+                border-bottom: 3px solid var(--green-accent);
+            }
+
+            .cat-nav-toggle {
+                background: var(--green-accent);
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: .5px;
+                white-space: nowrap;
+                cursor: pointer;
+                font-family: 'Be Vietnam Pro', sans-serif;
+            }
+
+                .cat-nav-toggle i {
+                    font-size: 16px;
+                    margin-right: 6px;
+                }
+
+            .cat-menu-scroll {
+                display: flex;
+                gap: 0;
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+
+                .cat-menu-scroll::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .cat-menu-scroll a {
+                    color: rgba(255,255,255,0.9);
+                    font-size: 12.5px;
+                    font-weight: 600;
+                    padding: 10px 14px;
+                    text-decoration: none;
+                    white-space: nowrap;
+                    border-right: 1px solid rgba(255,255,255,0.12);
+                    transition: background .15s, color .15s;
+                }
+
+                    .cat-menu-scroll a:hover {
+                        background: rgba(255,255,255,0.15);
+                        color: var(--yellow-sale);
+                    }
+
+            /* ===== HERO BANNER ===== */
+            .hero-section {
+                background: var(--gray-light);
+            }
+
+            .hero-carousel .carousel-item img {
+                width: 100%;
+                height: 280px;
+                object-fit: cover;
+                border-radius: var(--radius);
+            }
+
+            .hero-placeholder {
+                width: 100%;
+                height: 280px;
+                border-radius: var(--radius);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                font-weight: 700;
+                color: #fff;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .hero-placeholder::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(0,0,0,0.15);
+                }
+
+            .hp1 {
+                background: linear-gradient(135deg, #1a7a2e 0%, #38b558 60%, #ffd600 100%);
+            }
+
+            .hp2 {
+                background: linear-gradient(135deg, #e82828 0%, #ff6b00 60%, #ffd600 100%);
+            }
+
+            .hp3 {
+                background: linear-gradient(135deg, #0077b6 0%, #00b4d8 60%, #90e0ef 100%);
+            }
+
+            .hero-placeholder .text-wrap {
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero-placeholder .badge-sale {
+                background: var(--red-badge);
+                color: #fff;
+                font-size: 28px;
+                font-weight: 900;
+                padding: 6px 14px;
+                border-radius: 6px;
+                display: inline-block;
+                margin-bottom: 8px;
+                animation: pulse 1.8s ease-in-out infinite;
+            }
+
+            @@keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.05);
+                }
+            }
+
+            .hero-placeholder h2 {
+                font-size: 22px;
+                font-weight: 800;
+                margin: 0;
+            }
+
+            /* ===== FLASH SALE BAR ===== */
+            .flash-sale-bar {
+                background: #fff;
+                border-radius: var(--radius);
+                padding: 14px 18px;
+                margin: 12px 0;
+                box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+            }
+
+            .flash-label {
+                background: var(--orange-flash);
+                color: #fff;
+                font-size: 11px;
+                font-weight: 800;
+                padding: 4px 10px;
+                border-radius: 4px;
+                letter-spacing: 1px;
+                white-space: nowrap;
+            }
+
+                .flash-label span {
+                    display: block;
+                    font-size: 9px;
+                    font-weight: 600;
+                    letter-spacing: .5px;
+                }
+
+            .flash-scroll {
+                display: flex;
+                gap: 10px;
+                overflow-x: auto;
+                scrollbar-width: none;
+                padding-bottom: 4px;
+            }
+
+                .flash-scroll::-webkit-scrollbar {
+                    display: none;
+                }
+
+            .flash-item {
+                min-width: 80px;
+                text-align: center;
+                cursor: pointer;
+                flex-shrink: 0;
+            }
+
+            .flash-item-img {
+                width: 60px;
+                height: 60px;
+                border-radius: 8px;
+                background: var(--gray-light);
+                margin: 0 auto 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 26px;
+                transition: transform .2s;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .flash-item:hover .flash-item-img {
+                transform: scale(1.08);
+            }
+
+            .flash-item-badge {
+                position: absolute;
+                top: 0;
+                left: 0;
+                background: var(--red-badge);
+                color: #fff;
+                font-size: 9px;
+                font-weight: 800;
+                padding: 1px 5px;
+                border-radius: 0 0 5px 0;
+            }
+
+            .flash-item-name {
+                font-size: 11px;
+                font-weight: 600;
+                color: #333;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 80px;
+            }
+
+            /* ===== SECTION HEADING ===== */
+            .section-title {
+                font-size: 20px;
+                font-weight: 900;
+                color: var(--green-dark);
+                letter-spacing: -.3px;
+                position: relative;
+                padding-left: 14px;
+            }
+
+                .section-title::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 3px;
+                    bottom: 3px;
+                    width: 5px;
+                    background: var(--green-accent);
+                    border-radius: 3px;
+                }
+
+            .view-all {
+                color: var(--green-main);
+                font-size: 13px;
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+                .view-all:hover {
+                    color: var(--green-dark);
+                    text-decoration: underline;
+                }
+
+            /* ===== PRODUCT CARD ===== */
+            .product-card {
+                background: #fff;
+                border-radius: var(--radius);
+                overflow: hidden;
+                transition: box-shadow .2s, transform .2s;
+                cursor: pointer;
+                height: 100%;
+                position: relative;
+            }
+
+                .product-card:hover {
+                    box-shadow: 0 8px 28px rgba(44,158,71,0.18);
+                    transform: translateY(-3px);
+                }
+
+            .product-img-wrap {
+                background: var(--gray-light);
+                height: 160px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 56px;
+                position: relative;
+            }
+
+            .product-discount-badge {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                background: var(--red-badge);
+                color: #fff;
+                font-size: 11px;
+                font-weight: 800;
+                padding: 2px 7px;
+                border-radius: 4px;
+            }
+
+            .product-body {
+                padding: 10px 12px 12px;
+            }
+
+            .product-name {
+                font-size: 13px;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 4px;
+                line-height: 1.4;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .product-price-new {
+                font-size: 16px;
+                font-weight: 800;
+                color: var(--red-badge);
+            }
+
+            .product-price-old {
+                font-size: 12px;
+                color: #999;
+                text-decoration: line-through;
+                margin-left: 6px;
+            }
+
+            .promo-tag {
+                display: inline-block;
+                padding: 3px 10px;
+                border-radius: 4px;
+                font-size: 11px;
+                font-weight: 800;
+                letter-spacing: .3px;
+                margin-top: 6px;
+            }
+
+            .promo-green {
+                background: var(--green-main);
+                color: #fff;
+            }
+
+            .promo-pink {
+                background: var(--pink-promo);
+                color: #fff;
+            }
+
+            .promo-orange {
+                background: var(--orange-flash);
+                color: #fff;
+            }
+
+            .btn-add-cart {
+                width: 32px;
+                height: 32px;
+                background: var(--green-main);
+                border: none;
+                border-radius: 50%;
+                color: #fff;
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background .2s, transform .15s;
+                flex-shrink: 0;
+            }
+
+                .btn-add-cart:hover {
+                    background: var(--green-dark);
+                    transform: scale(1.12);
+                }
+
+            /* ===== PROMO BANNER ===== */
+            .promo-banner {
+                border-radius: var(--radius);
+                padding: 28px 32px;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+                min-height: 130px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+                .promo-banner::after {
+                    content: '';
+                    position: absolute;
+                    right: -30px;
+                    top: -30px;
+                    width: 160px;
+                    height: 160px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.1);
+                }
+
+            .pb-green {
+                background: linear-gradient(135deg, #1a7a2e, #38b558);
+            }
+
+            .pb-orange {
+                background: linear-gradient(135deg, #c94b00, #ff6b00);
+            }
+
+            .promo-banner .title {
+                font-size: 22px;
+                font-weight: 900;
+                line-height: 1.1;
+                margin-bottom: 4px;
+            }
+
+            .promo-banner .sub {
+                font-size: 13px;
+                opacity: .88;
+                margin-bottom: 12px;
+            }
+
+            .btn-promo {
+                display: inline-block;
+                background: #fff;
+                padding: 8px 18px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 700;
+                text-decoration: none;
+                width: fit-content;
+            }
+
+            .pb-green .btn-promo {
+                color: var(--green-dark);
+            }
+
+            .pb-orange .btn-promo {
+                color: var(--orange-flash);
+            }
+
+            /* ===== CATEGORY GRID ===== */
+            .cat-grid-item {
+                background: #fff;
+                border-radius: var(--radius);
+                padding: 16px 10px;
+                text-align: center;
+                cursor: pointer;
+                transition: box-shadow .2s, transform .2s;
+            }
+
+                .cat-grid-item:hover {
+                    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+                    transform: translateY(-2px);
+                }
+
+                .cat-grid-item .icon {
+                    font-size: 32px;
+                    margin-bottom: 8px;
+                }
+
+                .cat-grid-item .name {
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: var(--green-dark);
+                    line-height: 1.3;
+                }
+
+            /* ===== FOOTER ===== */
+            footer {
+                background: var(--green-dark);
+                color: rgba(255,255,255,0.85);
+                padding: 40px 0 20px;
+                margin-top: 40px;
+            }
+
+                footer h6 {
+                    color: #fff;
+                    font-weight: 800;
+                    font-size: 14px;
+                    margin-bottom: 14px;
+                    letter-spacing: .5px;
+                }
+
+                footer ul {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                }
+
+                    footer ul li {
+                        margin-bottom: 8px;
+                    }
+
+                        footer ul li a {
+                            color: rgba(255,255,255,0.7);
+                            text-decoration: none;
+                            font-size: 13px;
+                            transition: color .15s;
+                        }
+
+                            footer ul li a:hover {
+                                color: var(--yellow-sale);
+                            }
+
+            .footer-bottom {
+                border-top: 1px solid rgba(255,255,255,0.15);
+                margin-top: 28px;
+                padding-top: 18px;
+                font-size: 12px;
+                color: rgba(255,255,255,0.55);
+                text-align: center;
+            }
+
+            .social-btn {
+                width: 36px;
+                height: 36px;
+                background: rgba(255,255,255,0.15);
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 16px;
+                text-decoration: none;
+                transition: background .2s;
+            }
+
+                .social-btn:hover {
+                    background: var(--green-accent);
+                    color: #fff;
+                }
+
+            /* ===== SIDEBAR CATEGORY (desktop) ===== */
+            .sidebar-cat {
+                background: #fff;
+                border-radius: var(--radius);
+                overflow: hidden;
+            }
+
+            .sidebar-cat-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 16px;
+                border-bottom: 1px solid #f0f0f0;
+                cursor: pointer;
+                transition: background .15s;
+                font-size: 13px;
+                font-weight: 600;
+                color: #333;
+            }
+
+                .sidebar-cat-item:last-child {
+                    border-bottom: none;
+                }
+
+                .sidebar-cat-item:hover {
+                    background: var(--green-light);
+                    color: var(--green-dark);
+                }
+
+                .sidebar-cat-item i {
+                    width: 20px;
+                    text-align: center;
+                    color: var(--green-main);
+                }
+
+                .sidebar-cat-item .arrow {
+                    margin-left: auto;
+                    color: #ccc;
+                    font-size: 11px;
+                }
+
+            /* ===== HIGHLIGHT ROW ===== */
+            .highlight-wrap {
+                background: linear-gradient(135deg, #fffde7, #e8f7ec);
+                border-radius: var(--radius);
+                padding: 18px;
+                margin-bottom: 16px;
+            }
+
+                .highlight-wrap .big-icon {
+                    font-size: 80px;
+                    line-height: 1;
+                }
+
+            /* Animated ribbon */
+            .ribbon-wrap {
+                position: relative;
+                overflow: hidden;
+            }
+
+                .ribbon-wrap::before {
+                    content: 'HOT';
+                    position: absolute;
+                    top: 12px;
+                    right: -20px;
+                    background: var(--red-badge);
+                    color: #fff;
+                    font-size: 10px;
+                    font-weight: 800;
+                    padding: 3px 26px;
+                    transform: rotate(45deg);
+                    letter-spacing: 1px;
+                }
+
+            /* Scroll reveal animation */
+            .fade-in {
+                opacity: 0;
+                transform: translateY(18px);
+                animation: fadeUp .5s ease forwards;
+            }
+
+            @@keyframes fadeUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .fade-in:nth-child(1) {
+                animation-delay: .05s;
+            }
+
+            .fade-in:nth-child(2) {
+                animation-delay: .12s;
+            }
+
+            .fade-in:nth-child(3) {
+                animation-delay: .19s;
+            }
+
+            .fade-in:nth-child(4) {
+                animation-delay: .26s;
+            }
+
+            .fade-in:nth-child(5) {
+                animation-delay: .33s;
+            }
+
+            /* ===== RESPONSIVE TWEAKS ===== */
+            @@media (max-width: 768px) {
+                .hero-placeholder {
+                    height: 180px;
+                }
+
+                    .hero-placeholder .badge-sale {
+                        font-size: 20px;
+                    }
+
+                    .hero-placeholder h2 {
+                        font-size: 16px;
+                    }
+
+                .section-title {
+                    font-size: 16px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- TOPBAR -->
+        <div class="topbar d-none d-md-block">
+            <div class="container d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-telephone-fill me-1"></i>Hotline: <a href="#">1800 6936</a> &nbsp;|&nbsp; <a href="#">Tra cứu đơn hàng</a> &nbsp;|&nbsp; <a href="#">Hệ thống cửa hàng</a></span>
+                <span>Giao hàng nhanh trong 2 giờ &nbsp;·&nbsp; <a href="#">Tải app</a></span>
+            </div>
+        </div>
+
+        <!-- MAIN NAVBAR -->
+        <nav class="main-navbar">
+            <div class="container">
+                <div class="row align-items-center g-2">
+                    <!-- Logo -->
+                    <div class="col-auto">
+                        <div class="logo-wrap">
+                            <div class="brand-name">Bách hóa <span>XANH</span></div>
+                            <div class="tagline">Siêu thị gần nhà, giá tiết kiệm</div>
+                        </div>
+                    </div>
+                    <!-- Search -->
+                    <div class="col">
+                        <div class="search-bar">
+                            <input type="text" placeholder="Thịt cá giảm đến 37%..." />
+                            <button><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+                    <!-- Location -->
+                    <div class="col-auto d-none d-lg-block">
+                        <div class="location-btn">
+                            <i class="bi bi-geo-alt-fill me-1"></i> Chọn vị trí giao gần bạn <i class="bi bi-chevron-down ms-1"></i>
+                        </div>
+                    </div>
+                    <!-- Cart & Account -->
+                    <div class="col-auto d-flex gap-2">
+                        <button class="nav-action-btn position-relative">
+                            <i class="bi bi-cart3"></i>
+                            <span>Giỏ hàng</span>
+                            <span class="cart-badge">3</span>
+                        </button>
+                        <button class="nav-action-btn d-none d-md-flex">
+                            <i class="bi bi-person-circle"></i>
+                            <partial name="_LoginPartial" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- CATEGORY NAV BAR -->
+        <div class="cat-nav">
+            <div class="container">
+                <div class="d-flex align-items-stretch">
+                    <button class="cat-nav-toggle"><i class="bi bi-list"></i> DANH MỤC SẢN PHẨM</button>
+                    <div class="cat-menu-scroll flex-grow-1">
+                        <a href="#">🔥 Khuyến Mãi Sốc</a>
+                        <a href="#">🥩 Thịt, Cá, Hải Sản</a>
+                        <a href="#">🥦 Rau, Củ, Trái Cây</a>
+                        <a href="#">🧴 Dầu Ăn, Gia Vị</a>
+                        <a href="#">🍚 Gạo, Bột, Đồ Khô</a>
+                        <a href="#">🍜 Mì, Miến, Cháo</a>
+                        <a href="#">🥛 Sữa Các Loại</a>
+                        <a href="#">🍦 Kem, Sữa Chua</a>
+                        <a href="#">🧊 Thực Phẩm Đông Mát</a>
+                        <a href="#">🍺 Bia, Nước Giải Khát</a>
+                        <a href="#">🍪 Bánh Kẹo</a>
+                        <a href="#">🧼 Chăm Sóc Cá Nhân</a>
+                        <a href="#">🏠 Vệ Sinh Nhà Cửa</a>
+                        <a href="#">👶 Mẹ & Bé</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="container py-3">
+            <div class="row g-3">
+
+                <!-- SIDEBAR (desktop only) -->
+                <div class="col-lg-2 d-none d-lg-block">
+                    <div class="sidebar-cat">
+                        <div class="sidebar-cat-item"><i class="bi bi-fire text-danger"></i> Khuyến Mãi Sốc <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-egg-fried"></i> Thịt, Cá, Trứng <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-flower1"></i> Rau, Củ, Trái Cây <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-droplet-fill"></i> Dầu Ăn, Gia Vị <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-bag-fill"></i> Gạo, Bột, Đồ Khô <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-cup-straw"></i> Mì, Miến, Cháo <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-cup-hot-fill"></i> Sữa Các Loại <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-star-fill text-warning"></i> Kem, Sữa Chua <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-snow2"></i> Thực Phẩm Đông Mát <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-balloon-fill"></i> Bia, Nước Giải Khát <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-cookie"></i> Bánh Kẹo Các Loại <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-person-heart"></i> Chăm Sóc Cá Nhân <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-house-heart-fill"></i> Vệ Sinh Nhà Cửa <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                        <div class="sidebar-cat-item"><i class="bi bi-gender-female"></i> Sản Phẩm Mẹ & Bé <span class="arrow"><i class="bi bi-chevron-right"></i></span></div>
+                    </div>
+                </div>
+
+                <!-- MAIN COLUMN -->
+                <div class="col-lg-10">
+
+                    <!-- HERO CAROUSEL -->
+                    <div id="heroCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="hero-placeholder hp1">
+                                    <div class="text-wrap">
+                                        <div class="badge-sale">-37%</div>
+                                        <h2>THỊT CÁ TƯƠI NGON<br>GIÁ RẺ MỖI NGÀY</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="hero-placeholder hp2">
+                                    <div class="text-wrap">
+                                        <div class="badge-sale">FLASH SALE</div>
+                                        <h2>GIÁ SỐC CUỐI TUẦN<br>GIẢM ĐẾN 49%</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="hero-placeholder hp3">
+                                    <div class="text-wrap">
+                                        <div class="badge-sale">HƠN 100.000</div>
+                                        <h2>PHIẾU GIẢM GIÁ<br>LẤY NGAY HÔM NAY</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+
+                    <!-- FLASH SALE BAR -->
+                    <div class="flash-sale-bar d-flex align-items-center gap-3">
+                        <div class="flash-label text-center">
+                            FLASH<br><span>SALE</span>
+                        </div>
+                        <div class="flash-scroll flex-grow-1">
+                            <div class="flash-item" data-category="Giặt xả">
+                                <div class="flash-item-img">🧴<span class="flash-item-badge">-35%</span></div>
+                                <div class="flash-item-name">Giặt xả</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">🫙<span class="flash-item-badge">-49%</span></div>
+                                <div class="flash-item-name">Giảm đề...</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">🍺<span class="flash-item-badge">-20%</span></div>
+                                <div class="flash-item-name">Bia</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">💧<span class="flash-item-badge">-15%</span></div>
+                                <div class="flash-item-name">Nước suối</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">🥛<span class="flash-item-badge">-25%</span></div>
+                                <div class="flash-item-name">Sữa tươi</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">🌭<span class="flash-item-badge">-30%</span></div>
+                                <div class="flash-item-name">Xúc xích</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">🍦<span class="flash-item-badge">-40%</span></div>
+                                <div class="flash-item-name">Kem đán...</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">🍞<span class="flash-item-badge">-22%</span></div>
+                                <div class="flash-item-name">Bánh...</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">🍜<span class="flash-item-badge">-18%</span></div>
+                                <div class="flash-item-name">Mì ăn liền</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">🍬<span class="flash-item-badge">-12%</span></div>
+                                <div class="flash-item-name">Kẹo cứng</div>
+                            </div>
+                            <div class="flash-item">
+                                <div class="flash-item-img">🥬<span class="flash-item-badge">-28%</span></div>
+                                <div class="flash-item-name">Rau xanh</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROMO BANNERS -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="promo-banner pb-green">
+                                <div class="title">HƠN 100.000<br>PHIẾU GIẢM GIÁ</div>
+                                <div class="sub">Ưu đãi hấp dẫn mỗi ngày dành cho bạn</div>
+                                <a href="#" class="btn-promo">LẤY NGAY →</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="promo-banner pb-orange">
+                                <div class="title">GIÁ SỐC<br>CUỐI TUẦN</div>
+                                <div class="sub">Hàng ngàn sản phẩm giảm đến 49%</div>
+                                <a href="#" class="btn-promo">XEM NGAY →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SẢN PHẨM THIẾT YẾU -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="section-title">SẢN PHẨM THIẾT YẾU</div>
+                        <a href="#" class="view-all">Xem tất cả <i class="bi bi-chevron-right"></i></a>
+                    </div>
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5 g-2 mb-4">
+                        <!-- Product 1 -->
+                        <div class="col fade-in">
+                            <div class="product-card ribbon-wrap">
+                                <div class="product-img-wrap">🍜<span class="product-discount-badge">-15%</span></div>
+                                <div class="product-body">
+                                    <div class="product-name">Mì 3 Miền 65g (Thùng)</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div>
+                                            <span class="product-price-new">90.000₫</span>
+                                            <span class="product-price-old">106.000₫</span>
+                                        </div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-orange">CHỈ 90K/THÙNG</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product 2 -->
+                        <div class="col fade-in">
+                            <div class="product-card">
+                                <div class="product-img-wrap">🥛</div>
+                                <div class="product-body">
+                                    <div class="product-name">Sữa Chua Yakult Probiotic (Lốc 10)</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div>
+                                            <span class="product-price-new">45.000₫</span>
+                                            <span class="product-price-old">52.000₫</span>
+                                        </div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-pink">MUA 2 TẶNG 1</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product 3 -->
+                        <div class="col fade-in">
+                            <div class="product-card">
+                                <div class="product-img-wrap">🍦<span class="product-discount-badge">-20%</span></div>
+                                <div class="product-body">
+                                    <div class="product-name">Kem Celano Vani Hạt Sôcôla 100ml</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div>
+                                            <span class="product-price-new">18.000₫</span>
+                                            <span class="product-price-old">22.500₫</span>
+                                        </div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-pink">MUA 2 TẶNG 1</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product 4 -->
+                        <div class="col fade-in">
+                            <div class="product-card">
+                                <div class="product-img-wrap">📦</div>
+                                <div class="product-body">
+                                    <div class="product-name">Sữa Dinh Dưỡng TH True Milk (Thùng 48 hộp)</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div>
+                                            <span class="product-price-new">270.000₫</span>
+                                            <span class="product-price-old">320.000₫</span>
+                                        </div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-green">GIÁ TIẾT KIỆM</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product 5 -->
+                        <div class="col fade-in">
+                            <div class="product-card">
+                                <div class="product-img-wrap">☕<span class="product-discount-badge">-25%</span></div>
+                                <div class="product-body">
+                                    <div class="product-name">Cà Phê Hoà Tan Nescafé CafePHO (Hộp 10 gói)</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div>
+                                            <span class="product-price-new">52.000₫</span>
+                                            <span class="product-price-old">69.000₫</span>
+                                        </div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-orange">GIÁ SỐC</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DANH MỤC NỔI BẬT -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="section-title">DANH MỤC NỔI BẬT</div>
+                    </div>
+                    <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 row-cols-lg-7 g-2 mb-4">
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🥩</div><div class="name">Thịt, Cá, Trứng</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🥦</div><div class="name">Rau, Củ, Quả</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🍚</div><div class="name">Gạo, Bột Mì</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🥛</div><div class="name">Sữa Các Loại</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🍦</div><div class="name">Kem Sữa Chua</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🍺</div><div class="name">Bia, Nước Uống</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🍪</div><div class="name">Bánh Kẹo</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🧴</div><div class="name">Chăm Sóc CN</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🏠</div><div class="name">Vệ Sinh Nhà</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">👶</div><div class="name">Mẹ & Bé</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🧊</div><div class="name">Đông Mát</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🌶️</div><div class="name">Gia Vị, Nước Mắm</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">🍜</div><div class="name">Mì, Miến, Phở</div></div></div>
+                        <div class="col"><div class="cat-grid-item"><div class="icon">☕</div><div class="name">Cà Phê, Trà</div></div></div>
+                    </div>
+
+                    <!-- SẢN PHẨM CHĂM SÓC CÁ NHÂN -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="section-title">CHĂM SÓC CÁ NHÂN</div>
+                        <a href="#" class="view-all">Xem tất cả <i class="bi bi-chevron-right"></i></a>
+                    </div>
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5 g-2 mb-4">
+                        <div class="col fade-in">
+                            <div class="product-card">
+                                <div class="product-img-wrap">🧴<span class="product-discount-badge">-30%</span></div>
+                                <div class="product-body">
+                                    <div class="product-name">Bột Giặt Lix Sạch Thơm 24h 4.5kg</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div><span class="product-price-new">89.000₫</span><span class="product-price-old">128.000₫</span></div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-green">TIẾT KIỆM</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col fade-in">
+                            <div class="product-card">
+                                <div class="product-img-wrap">🛁</div>
+                                <div class="product-body">
+                                    <div class="product-name">Sữa Tắm Lux Botanicals Hoa Hồng 530ml</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div><span class="product-price-new">62.000₫</span><span class="product-price-old">75.000₫</span></div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-pink">MUA 2 TẶNG 1</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col fade-in">
+                            <div class="product-card">
+                                <div class="product-img-wrap">💆<span class="product-discount-badge">-22%</span></div>
+                                <div class="product-body">
+                                    <div class="product-name">Sữa Tắm Nam Romano Classic 400ml</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div><span class="product-price-new">55.000₫</span><span class="product-price-old">71.000₫</span></div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-orange">GIÁ TỐT</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col fade-in">
+                            <div class="product-card">
+                                <div class="product-img-wrap">🧹</div>
+                                <div class="product-body">
+                                    <div class="product-name">Tẩy Bồn Cầu Vim Trắng Sáng 900ml</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div><span class="product-price-new">38.000₫</span><span class="product-price-old">48.000₫</span></div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-green">GIÁ TIẾT KIỆM</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col fade-in">
+                            <div class="product-card ribbon-wrap">
+                                <div class="product-img-wrap">🪥<span class="product-discount-badge">-35%</span></div>
+                                <div class="product-body">
+                                    <div class="product-name">Hazeline Sữa Rửa Mặt Matcha Lúa Mạch 100ml</div>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <div><span class="product-price-new">29.000₫</span><span class="product-price-old">45.000₫</span></div>
+                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <span class="promo-tag promo-orange">GIÁ SỐC</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="brand-name" style="font-size:24px;font-weight:900;color:#fff;">Bách hóa <span style="color:#ffd600;">XANH</span></div>
+                        <p class="mt-2" style="font-size:13px;opacity:.75;">Siêu thị gần nhà, giá tiết kiệm. Giao hàng nhanh trong 2 giờ toàn quốc.</p>
+                        <div class="d-flex gap-2 mt-3">
+                            <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="social-btn"><i class="bi bi-youtube"></i></a>
+                            <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="social-btn"><i class="bi bi-tiktok"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <h6>VỀ CHÚNG TÔI</h6>
+                        <ul>
+                            <li><a href="#">Giới thiệu</a></li>
+                            <li><a href="#">Hệ thống cửa hàng</a></li>
+                            <li><a href="#">Tuyển dụng</a></li>
+                            <li><a href="#">Tin tức</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <h6>CHÍNH SÁCH</h6>
+                        <ul>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Điều khoản dịch vụ</a></li>
+                            <li><a href="#">Chính sách đổi trả</a></li>
+                            <li><a href="#">Phương thức thanh toán</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <h6>HỖ TRỢ</h6>
+                        <ul>
+                            <li><a href="#">Hướng dẫn mua hàng</a></li>
+                            <li><a href="#">Tra cứu đơn hàng</a></li>
+                            <li><a href="#">Câu hỏi thường gặp</a></li>
+                            <li><a href="#">Liên hệ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <h6>LIÊN HỆ</h6>
+                        <ul>
+                            <li><a href="#"><i class="bi bi-telephone-fill me-1"></i> Hotline: 1800 6936</a></li>
+                            <li><a href="#"><i class="bi bi-envelope-fill me-1"></i> cskh@bachhoaxanh.com</a></li>
+                            <li><a href="#"><i class="bi bi-geo-alt-fill me-1"></i> 456 Lê Văn Việt, Q.9, TP.HCM</a></li>
+                        </ul>
+                        <div class="mt-3">
+                            <div style="font-size:12px;opacity:.7;margin-bottom:6px;">TẢI ỨNG DỤNG</div>
+                            <div class="d-flex gap-2">
+                                <a href="#" style="background:rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-size:12px;text-decoration:none;"><i class="bi bi-apple me-1"></i>App Store</a>
+                                <a href="#" style="background:rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-size:12px;text-decoration:none;"><i class="bi bi-google-play me-1"></i>Google Play</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    © 2025 Bách Hóa Xanh - Công ty TNHH Thương mại Bách Hóa Xanh. ĐKKD: 0310818445 do Sở KHĐT TP.HCM cấp.
+                </div>
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Cart interaction
+            document.querySelectorAll('.btn-add-cart').forEach(btn => {
+              btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const badge = document.querySelector('.cart-badge');
+                let count = parseInt(badge.textContent) || 0;
+                badge.textContent = count + 1;
+                this.style.transform = 'scale(1.4)';
+                this.style.background = 'var(--green-dark)';
+                setTimeout(() => {
+                  this.style.transform = '';
+                  this.style.background = '';
+                }, 250);
+              });
+            });
+
+            // Flash item click highlight
+            document.querySelectorAll('.flash-item').forEach(item => {
+              item.addEventListener('click', function() {
+                this.querySelector('.flash-item-img').style.boxShadow = '0 0 0 3px var(--green-accent)';
+                setTimeout(() => this.querySelector('.flash-item-img').style.boxShadow = '', 600);
+              });
+            });
+        </script>
+    </body>
+    </html>
+
+}
+
+@if (role == 1)
+{
+    <a class="btn btn-warning" asp-controller="Home" asp-action="StaffPage">Trang Staff</a>
+}
+
+@if (role == 3)
+{
+    <a class="btn btn-success" asp-controller="Home" asp-action="Privacy">Trang User</a>
+}

@@ -1,0 +1,263 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<style>
+    .profile-wrapper {
+        max-width: 560px;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        background: linear-gradient(135deg, #1a7a2e, #38b558);
+        border-radius: 14px;
+        padding: 24px 28px;
+        color: #fff;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .profile-header::after {
+            content: '';
+            position: absolute;
+            right: -30px;
+            top: -30px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+        }
+
+    .profile-avatar {
+        width: 64px;
+        height: 64px;
+        background: rgba(255,255,255,0.22);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        flex-shrink: 0;
+        border: 2.5px solid rgba(255,255,255,0.45);
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-header-info {
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-header-name {
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 3px;
+    }
+
+    .profile-header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 11.5px;
+        font-weight: 600;
+    }
+
+        .profile-header-badge i {
+            color: #ffd600;
+        }
+
+    /* Form card */
+    .profile-form-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 24px rgba(26,122,46,0.10);
+        padding: 28px 28px 24px;
+    }
+
+    .section-label {
+        font-size: 11px;
+        font-weight: 800;
+        color: #aaa;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #f0f0f0;
+        }
+
+    /* Inputs */
+    .profile-form-card .form-floating .form-control {
+        border: 1.5px solid #e8e8e8;
+        border-radius: 10px !important;
+        font-size: 14px;
+        background: #fafafa;
+        transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+
+        .profile-form-card .form-floating .form-control:focus {
+            border-color: #2c9e47;
+            box-shadow: 0 0 0 3px rgba(44,158,71,0.11);
+            background: #fff;
+        }
+
+        .profile-form-card .form-floating .form-control:disabled {
+            background: #f4f4f4;
+            color: #aaa;
+            border-color: #ebebeb;
+            cursor: not-allowed;
+        }
+
+    .profile-form-card .form-floating label {
+        font-size: 13px;
+        color: #999;
+    }
+
+    /* Disabled tag */
+    .input-disabled-note {
+        font-size: 11.5px;
+        color: #bbb;
+        margin-top: -8px;
+        margin-bottom: 14px;
+        padding-left: 4px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Save button */
+    .btn-save {
+        background: linear-gradient(135deg, #2c9e47, #38b558);
+        border: none;
+        border-radius: 25px;
+        padding: 11px 0;
+        width: 100%;
+        font-size: 14px;
+        font-weight: 800;
+        color: #fff;
+        cursor: pointer;
+        transition: transform .15s, box-shadow .2s;
+        box-shadow: 0 4px 14px rgba(44,158,71,0.28);
+        letter-spacing: .2px;
+    }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(44,158,71,0.38);
+        }
+
+        .btn-save:active {
+            transform: translateY(0);
+        }
+
+    /* Quick links */
+    .quick-links {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+    }
+
+    .quick-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #e8f7ec;
+        color: #1a7a2e;
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background .2s;
+        border: 1.5px solid transparent;
+    }
+
+        .quick-link:hover {
+            background: #d0f0d8;
+            color: #145520;
+        }
+</style>
+
+<div class="profile-wrapper">
+
+    <!-- Header card -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="profile-header-info">
+            <div class="profile-header-name">@Model.Username</div>
+            <div class="profile-header-badge">
+                <i class="bi bi-patch-check-fill"></i> Thành viên Bách Hóa Xanh
+            </div>
+        </div>
+    </div>
+
+    <!-- Status message -->
+    <partial name="_StatusMessage" for="StatusMessage" />
+
+    <!-- Form card -->
+    <div class="profile-form-card">
+        <div class="section-label"><i class="bi bi-pencil-square text-success"></i> Thông tin tài khoản</div>
+
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert" style="font-size:13px;"></div>
+
+            <!-- Username (disabled) -->
+            <div class="form-floating mb-1">
+                <input asp-for="Username" class="form-control" placeholder="Tên người dùng" disabled />
+                <label asp-for="Username"><i class="bi bi-person me-1"></i>Tên người dùng</label>
+            </div>
+            <div class="input-disabled-note">
+                <i class="bi bi-lock-fill text-secondary"></i> Tên người dùng không thể thay đổi
+            </div>
+
+            <!-- Phone number -->
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Số điện thoại" />
+                <label asp-for="Input.PhoneNumber"><i class="bi bi-telephone me-1"></i>Số điện thoại</label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger" style="font-size:12px;"></span>
+            </div>
+
+            <button id="update-profile-button" type="submit" class="btn-save">
+                <i class="bi bi-check-circle-fill me-2"></i>Lưu thay đổi
+            </button>
+        </form>
+
+        <!-- Quick links -->
+        <div class="quick-links">
+            <a asp-page="./ChangePassword" class="quick-link">
+                <i class="bi bi-key-fill"></i> Đổi mật khẩu
+            </a>
+            <a asp-page="./Email" class="quick-link">
+                <i class="bi bi-envelope-fill"></i> Quản lý email
+            </a>
+            <a asp-page="./TwoFactorAuthentication" class="quick-link">
+                <i class="bi bi-shield-lock-fill"></i> Bảo mật 2 lớp
+            </a>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

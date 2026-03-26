@@ -1,0 +1,1012 @@
+﻿@model IEnumerable<WebBanHang.Models.Product>
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý sản phẩm – Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --green-dark: #1a7a2e;
+            --green-main: #2c9e47;
+            --green-light: #e8f7ec;
+            --green-accent: #38b558;
+            --yellow: #ffd600;
+            --red: #e82828;
+            --orange: #ff6b00;
+            --sidebar-w: 224px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: #f0f2f0;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ═══════════════════════════
+                   SIDEBAR
+                ═══════════════════════════ */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--green-dark);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sb-brand {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+
+            .sb-brand .name {
+                font-size: 19px;
+                font-weight: 900;
+                color: #fff;
+                line-height: 1;
+            }
+
+                .sb-brand .name span {
+                    color: var(--yellow);
+                }
+
+            .sb-brand .tag {
+                font-size: 10px;
+                color: rgba(255,255,255,.6);
+                font-style: italic;
+                margin-top: 2px;
+            }
+
+        .sb-admin-badge {
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255,255,255,.13);
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 11px;
+            color: rgba(255,255,255,.85);
+            font-weight: 600;
+        }
+
+        .sb-section {
+            padding: 16px 14px 5px;
+            font-size: 10px;
+            font-weight: 800;
+            color: rgba(255,255,255,.35);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .sb-nav {
+            list-style: none;
+            padding: 0 8px;
+        }
+
+            .sb-nav li a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 9px 12px;
+                border-radius: 9px;
+                color: rgba(255,255,255,.72);
+                font-size: 13px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: background .15s, color .15s;
+                margin-bottom: 2px;
+            }
+
+                .sb-nav li a i {
+                    font-size: 16px;
+                    width: 20px;
+                    text-align: center;
+                    flex-shrink: 0;
+                }
+
+                .sb-nav li a:hover {
+                    background: rgba(255,255,255,.1);
+                    color: #fff;
+                }
+
+                .sb-nav li a.active {
+                    background: var(--green-main);
+                    color: #fff;
+                }
+
+        /* ═══════════════════════════
+                   MAIN
+                ═══════════════════════════ */
+        .main-wrap {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            background: #fff;
+            padding: 13px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            gap: 12px;
+        }
+
+        .topbar-title {
+            font-size: 17px;
+            font-weight: 900;
+            color: var(--green-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--green-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        /* CONTENT */
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+        }
+
+        /* STAT CARDS */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 13px;
+            padding: 16px 18px;
+            box-shadow: 0 1px 10px rgba(0,0,0,.06);
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .si-green {
+            background: var(--green-light);
+            color: var(--green-main);
+        }
+
+        .si-yellow {
+            background: #fff8e1;
+            color: #d97706;
+        }
+
+        .si-red {
+            background: #fff0f0;
+            color: var(--red);
+        }
+
+        .si-blue {
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+
+        .stat-num {
+            font-size: 24px;
+            font-weight: 900;
+            color: #111;
+            line-height: 1;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: #999;
+            font-weight: 500;
+            margin-top: 3px;
+        }
+
+        /* TABLE CARD */
+        .tcard {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(0,0,0,.07);
+            overflow: hidden;
+        }
+
+        .tcard-head {
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f0f0f0;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tcard-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+            .tcard-title i {
+                color: var(--green-main);
+            }
+
+        /* Search */
+        .search-box {
+            position: relative;
+        }
+
+            .search-box input {
+                padding: 8px 14px 8px 36px;
+                border: 1.5px solid #e8e8e8;
+                border-radius: 20px;
+                font-size: 13px;
+                font-family: 'Be Vietnam Pro', sans-serif;
+                outline: none;
+                width: 220px;
+                transition: border-color .2s, box-shadow .2s;
+            }
+
+                .search-box input:focus {
+                    border-color: var(--green-main);
+                    box-shadow: 0 0 0 3px rgba(44,158,71,.1);
+                }
+
+            .search-box i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #bbb;
+                font-size: 13px;
+                pointer-events: none;
+            }
+
+        /* Add button */
+        .btn-add {
+            background: linear-gradient(135deg, var(--green-main), var(--green-accent));
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: transform .15s, box-shadow .2s;
+            box-shadow: 0 3px 10px rgba(44,158,71,.28);
+        }
+
+            .btn-add:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 5px 16px rgba(44,158,71,.38);
+                color: #fff;
+            }
+
+        /* TABLE */
+        .ptable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .ptable thead tr {
+                background: #fafafa;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .ptable thead th {
+                padding: 11px 16px;
+                font-size: 11px;
+                font-weight: 800;
+                color: #aaa;
+                text-transform: uppercase;
+                letter-spacing: .8px;
+                white-space: nowrap;
+            }
+
+            .ptable tbody tr {
+                border-bottom: 1px solid #f7f7f7;
+                transition: background .12s;
+            }
+
+                .ptable tbody tr:last-child {
+                    border-bottom: none;
+                }
+
+                .ptable tbody tr:hover {
+                    background: #fafffe;
+                }
+
+            .ptable tbody td {
+                padding: 12px 16px;
+                font-size: 13px;
+                vertical-align: middle;
+            }
+
+        /* product image */
+        .prod-img {
+            width: 54px;
+            height: 54px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1.5px solid #eee;
+        }
+
+        .prod-img-placeholder {
+            width: 54px;
+            height: 54px;
+            border-radius: 10px;
+            background: var(--green-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 1.5px solid #eee;
+        }
+
+        /* id chip */
+        .id-chip {
+            background: #f2f2f2;
+            color: #999;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        /* name */
+        .prod-name {
+            font-weight: 700;
+            color: #1a1a1a;
+            font-size: 13.5px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* price */
+        .price {
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--red);
+            white-space: nowrap;
+        }
+
+        /* amount badge */
+        .amt {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .amt-ok {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .amt-low {
+            background: #fff8e1;
+            color: #b45309;
+        }
+
+        .amt-out {
+            background: #fff0f0;
+            color: var(--red);
+        }
+
+        /* action buttons */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-act {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform .15s, filter .15s;
+        }
+
+            .btn-act:hover {
+                transform: scale(1.12);
+                filter: brightness(.92);
+            }
+
+        .btn-edit {
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+
+        .btn-detail {
+            background: #fefce8;
+            color: #b45309;
+        }
+
+        .btn-del {
+            background: #fff0f0;
+            color: var(--red);
+        }
+
+        /* PAGINATION */
+        .pagination-bar {
+            padding: 13px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid #f0f0f0;
+            font-size: 13px;
+            color: #aaa;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .page-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pbtn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1.5px solid #eee;
+            background: #fff;
+            color: #666;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .15s;
+        }
+
+            .pbtn:hover, .pbtn.active {
+                background: var(--green-main);
+                color: #fff;
+                border-color: var(--green-main);
+            }
+
+        /* EMPTY STATE */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #ccc;
+        }
+
+            .empty-state i {
+                font-size: 48px;
+                display: block;
+                margin-bottom: 12px;
+            }
+
+            .empty-state p {
+                font-size: 14px;
+                margin-bottom: 16px;
+            }
+
+        /* DELETE MODAL */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .modal-bg.open {
+                display: flex;
+            }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 18px;
+            padding: 34px 28px 28px;
+            max-width: 370px;
+            width: 90%;
+            box-shadow: 0 24px 60px rgba(0,0,0,.22);
+            animation: popIn .22s cubic-bezier(.34,1.56,.64,1);
+        }
+        @@keyframes popIn {
+            from {
+                transform: scale(.88);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-emoji {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .modal-title {
+            font-size: 19px;
+            font-weight: 900;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 7px;
+        }
+
+        .modal-desc {
+            font-size: 13px;
+            color: #888;
+            text-align: center;
+            line-height: 1.65;
+            margin-bottom: 24px;
+        }
+
+            .modal-desc strong {
+                color: #333;
+            }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .mbtn-cancel {
+            flex: 1;
+            padding: 11px;
+            border-radius: 25px;
+            border: 1.5px solid #e0e0e0;
+            background: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            color: #666;
+            cursor: pointer;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            transition: background .15s;
+        }
+
+            .mbtn-cancel:hover {
+                background: #f5f5f5;
+            }
+
+        .mbtn-del {
+            flex: 1;
+            padding: 11px;
+            border-radius: 25px;
+            border: none;
+            background: var(--red);
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            transition: opacity .15s;
+            width: 100%;
+        }
+
+            .mbtn-del:hover {
+                opacity: .85;
+            }
+
+        /* TOAST */
+        .toast-stack {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            z-index: 400;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast-item {
+            background: var(--green-dark);
+            color: #fff;
+            border-radius: 10px;
+            padding: 11px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            box-shadow: 0 4px 18px rgba(0,0,0,.2);
+            animation: slideUp .28s ease;
+        }
+        @@keyframes slideUp {
+            from {
+                transform: translateY(18px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* RESPONSIVE */
+        @@media (max-width: 1100px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-wrap {
+                margin-left: 0;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .search-box input {
+                width: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ════════════ SIDEBAR ════════════ -->
+    <aside class="sidebar">
+        <div class="sb-brand">
+            <div class="name">Bách hóa <span>XANH</span></div>
+            <div class="tag">Siêu thị gần nhà, giá tiết kiệm</div>
+            <div class="sb-admin-badge"><i class="bi bi-shield-fill-check"></i> Admin Panel</div>
+        </div>
+
+        <div class="sb-section">Tổng quan</div>
+        <ul class="sb-nav">
+            <li><a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="#"><i class="bi bi-graph-up-arrow"></i> Thống kê</a></li>
+        </ul>
+
+        <div class="sb-section">Quản lý</div>
+        <ul class="sb-nav">
+            <li><a href="#" class="active"><i class="bi bi-box-seam-fill"></i> Sản phẩm</a></li>
+            <li><a href="#"><i class="bi bi-tags-fill"></i> Danh mục</a></li>
+            <li><a href="#"><i class="bi bi-cart-fill"></i> Đơn hàng</a></li>
+            <li><a href="#"><i class="bi bi-people-fill"></i> Khách hàng</a></li>
+            <li><a href="#"><i class="bi bi-star-fill"></i> Đánh giá</a></li>
+        </ul>
+
+        <div class="sb-section">Hệ thống</div>
+        <ul class="sb-nav">
+            <li><a href="#"><i class="bi bi-gear-fill"></i> Cài đặt</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill"></i> Trang chủ</a></li>
+            <li><a asp-area="Identity" asp-page="/Account/Logout"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+        </ul>
+    </aside>
+
+    <!-- ════════════ MAIN ════════════ -->
+    <div class="main-wrap">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-title">
+                <i class="bi bi-box-seam-fill"></i> Quản lý sản phẩm
+            </div>
+            <div class="topbar-right">
+                <span style="font-size:12px;color:#bbb;display:none;" id="topDate"></span>
+                <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                <span style="font-size:13px;font-weight:700;color:#444;">Admin</span>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- STAT CARDS -->
+            @{
+                int total = Model.Count();
+                int outOf = Model.Count(p => p.Amount == 0);
+                int lowOf = Model.Count(p => p.Amount > 0 && p.Amount <= 10);
+                decimal max = Model.Any() ? Model.Max(p => p.Price) : 0;
+            }
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon si-green"><i class="bi bi-box-seam-fill"></i></div>
+                    <div>
+                        <div class="stat-num">@total</div>
+                        <div class="stat-lbl">Tổng sản phẩm</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon si-yellow"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                    <div>
+                        <div class="stat-num">@lowOf</div>
+                        <div class="stat-lbl">Sắp hết hàng (≤ 10)</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon si-red"><i class="bi bi-x-circle-fill"></i></div>
+                    <div>
+                        <div class="stat-num">@outOf</div>
+                        <div class="stat-lbl">Hết hàng</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon si-blue"><i class="bi bi-currency-exchange"></i></div>
+                    <div>
+                        <div class="stat-num" style="font-size:17px;">@max.ToString("N0")₫</div>
+                        <div class="stat-lbl">Giá cao nhất</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLE CARD -->
+            <div class="tcard">
+                <div class="tcard-head">
+                    <div class="tcard-title">
+                        <i class="bi bi-list-ul"></i> Danh sách sản phẩm
+                        <span style="background:#f0f0f0;color:#888;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;">@total</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                        <div class="search-box">
+                            <i class="bi bi-search"></i>
+                            <input type="text" id="searchInput" placeholder="Tìm sản phẩm..." oninput="filterRows()" />
+                        </div>
+                        <a asp-action="Create" class="btn-add">
+                            <i class="bi bi-plus-lg"></i> Thêm mới
+                        </a>
+                    </div>
+                </div>
+
+                <div style="overflow-x:auto;">
+                    <table class="ptable" id="prodTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá bán</th>
+                                <th>Tồn kho</th>
+                                <th style="text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.Any())
+                            {
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="empty-state">
+                                            <i class="bi bi-inbox"></i>
+                                            <p>Chưa có sản phẩm nào trong hệ thống.</p>
+                                            <a asp-action="Create" class="btn-add" style="display:inline-flex;">
+                                                <i class="bi bi-plus-lg"></i> Thêm sản phẩm đầu tiên
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td><span class="id-chip">#@item.Id</span></td>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(item.Image))
+                                            {
+                                                <img src="@item.Image" alt="@item.Name" class="prod-img"
+                                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                                                <div class="prod-img-placeholder" style="display:none;">🛒</div>
+                                            }
+                                            else
+                                            {
+                                                <div class="prod-img-placeholder">🛒</div>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="prod-name" title="@item.Name">@item.Name</div>
+                                        </td>
+                                        <td>
+                                            <span class="price">@item.Price.ToString("N0")₫</span>
+                                        </td>
+                                        <td>
+                                            @if (item.Amount == 0)
+                                            {
+                                                <span class="amt amt-out"><i class="bi bi-x-circle-fill"></i> Hết hàng</span>
+                                            }
+                                            else if (item.Amount <= 10)
+                                            {
+                                                <span class="amt amt-low"><i class="bi bi-exclamation-triangle-fill"></i> Còn @item.Amount</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="amt amt-ok"><i class="bi bi-check-circle-fill"></i> @item.Amount</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="actions">
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn-act btn-edit" title="Chỉnh sửa"><i class="bi bi-pencil-fill"></i></a>
+                                                <a asp-action="Details" asp-route-id="@item.Id" class="btn-act btn-detail" title="Chi tiết"><i class="bi bi-eye-fill"></i></a>
+                                                <button class="btn-act btn-del" title="Xoá"
+                                                        onclick="openDelete(@item.Id, '@item.Name.Replace("'", "\\'")' )">
+                                                    <i class="bi bi-trash3-fill"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (Model.Any())
+                {
+                    <div class="pagination-bar">
+                        <span id="rowCount">Hiển thị <strong>@total</strong> sản phẩm</span>
+                        <div class="page-btns">
+                            <a href="#" class="pbtn"><i class="bi bi-chevron-left"></i></a>
+                            <a href="#" class="pbtn active">1</a>
+                            <a href="#" class="pbtn"><i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div><!-- /content -->
+    </div><!-- /main-wrap -->
+    <!-- ════════════ DELETE MODAL ════════════ -->
+    <div class="modal-bg" id="delModal">
+        <div class="modal-box">
+            <div class="modal-emoji">🗑️</div>
+            <div class="modal-title">Xác nhận xoá</div>
+            <div class="modal-desc">
+                Bạn có chắc muốn xoá sản phẩm<br>
+                <strong id="delName"></strong>?<br>
+                Hành động này <strong>không thể hoàn tác</strong>.
+            </div>
+            <div class="modal-btns">
+                <button class="mbtn-cancel" onclick="closeDelete()">Huỷ bỏ</button>
+                <form id="delForm" asp-action="Delete" method="post" style="flex:1;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="delId" />
+                    <button type="submit" class="mbtn-del">
+                        <i class="bi bi-trash3-fill me-1"></i>Xoá
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════ TOAST ════════════ -->
+    <div class="toast-stack" id="toastStack"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Date
+        const d = new Date();
+        document.getElementById('topDate').textContent =
+            d.toLocaleDateString('vi-VN', {weekday:'long', day:'2-digit', month:'2-digit', year:'numeric'});
+        document.getElementById('topDate').style.display = '';
+
+        // Search
+        function filterRows() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            let visible = 0;
+            document.querySelectorAll('#prodTable tbody tr').forEach(r => {
+                const show = r.textContent.toLowerCase().includes(q);
+                r.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            document.getElementById('rowCount').innerHTML =
+                'Hiển thị <strong>' + visible + '</strong> sản phẩm' +
+                (q ? ' (đang lọc)' : '');
+        }
+
+        // Delete modal
+        function openDelete(id, name) {
+            document.getElementById('delId').value   = id;
+            document.getElementById('delName').textContent = name;
+            document.getElementById('delModal').classList.add('open');
+        }
+        function closeDelete() {
+            document.getElementById('delModal').classList.remove('open');
+        }
+        document.getElementById('delModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDelete();
+        });
+
+        // Toast
+        function showToast(msg, type='success') {
+            const s = document.getElementById('toastStack');
+            const t = document.createElement('div');
+            t.className = 'toast-item';
+            t.style.background = type === 'success' ? 'var(--green-dark)' : 'var(--red)';
+            t.innerHTML = '<i class="bi bi-' + (type==='success' ? 'check-circle-fill' : 'exclamation-circle-fill') + '"></i>' + msg;
+            s.appendChild(t);
+            setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(), 300); }, 3000);
+        }
+        @if (TempData["Success"] != null)
+        {
+                <text>showToast('@Html.Raw(TempData["Success"])');</text>
+        }
+        @if (TempData["Error"] != null)
+        {
+                <text>showToast('@Html.Raw(TempData["Error"])', 'error');</text>
+        }
+    </script>
+</body>
+</html>

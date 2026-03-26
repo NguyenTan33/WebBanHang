@@ -1,0 +1,62 @@
+﻿@model WebBanHang.Models.Cart
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h4 class="fw-bold mb-4">Kiểm tra lại đơn hàng</h4>
+                <table class="table align-middle">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th>Sản phẩm</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-end">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <tr>
+                                <td>@item.Product.Name</td>
+                                <td class="text-center">x @item.Quantity</td>
+                                <td class="text-end fw-bold">@((item.Product.Price * item.Quantity).ToString("N0")) đ</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="text-end mt-3">
+                    <h5>Tổng cộng: <span class="text-danger fw-bold">@Model.CartItems.Sum(x => x.Product.Price * x.Quantity).ToString("N0") đ</span></h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card border-0 shadow-lg rounded-4 p-4 bg-light">
+                <h4 class="fw-bold mb-4">Thông tin giao hàng</h4>
+                <form asp-action="Checkout" method="post">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Họ và tên</label>
+                        <input type="text" name="fullName" class="form-control rounded-pill" placeholder="Nhập tên vào..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Số điện thoại</label>
+                        <input type="text" name="phone" class="form-control rounded-pill" placeholder="Nhập SĐT" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Địa chỉ nhận hàng</label>
+                        <textarea name="address" class="form-control rounded-4" rows="3" placeholder="Nhập địa chỉ (ví dụ :120 Yên Lãng...)" required></textarea>
+                    </div>
+
+                    <div class="alert alert-info small">
+                        <i class="bi bi-info-circle me-1"></i> Bấm xác nhận mua hàng để cập nhật đơn hàng ♥
+                    </div>
+
+                    <a asp-controller="Cart" asp-action="CheckoutSuccess"
+                       class="btn btn-success w-100 py-3 rounded-pill fw-bold shadow text-decoration-none">
+                        XÁC NHẬN MUA HÀNG
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

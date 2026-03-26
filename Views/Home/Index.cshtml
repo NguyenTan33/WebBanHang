@@ -857,15 +857,16 @@
                     </div>
                     <!-- Cart & Account -->
                     <div class="col-auto d-flex gap-2">
-                        <button class="nav-action-btn position-relative">
+                        <a asp-controller="Cart" asp-action="Index" class="nav-action-btn position-relative text-decoration-none">
                             <i class="bi bi-cart3"></i>
                             <span>Giỏ hàng</span>
                             <span class="cart-badge">3</span>
-                        </button>
-                        <button class="nav-action-btn d-none d-md-flex">
-                            <i class="bi bi-person-circle"></i>
+                        </a>
+
+                        <div class="nav-action-btn d-none d-md-flex align-items-center">
+                            <i class="bi bi-person-circle me-1"></i>
                             <partial name="_LoginPartial" />
-                        </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1052,7 +1053,9 @@
                                             <span class="product-price-new">90.000₫</span>
                                             <span class="product-price-old">106.000₫</span>
                                         </div>
-                                        <button class="btn-add-cart"><i class="bi bi-plus"></i></button>
+                                        <button class="btn-add-cart" data-id="3">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
                                     </div>
                                     <span class="promo-tag promo-orange">CHỈ 90K/THÙNG</span>
                                 </div>
@@ -1313,6 +1316,50 @@
                 this.querySelector('.flash-item-img').style.boxShadow = '0 0 0 3px var(--green-accent)';
                 setTimeout(() => this.querySelector('.flash-item-img').style.boxShadow = '', 600);
               });
+            });
+        </script>
+        <script>
+            // Đợi trang load xong hết mới chạy
+            document.addEventListener('DOMContentLoaded', function () {
+
+                // Tìm tất cả các nút có class .btn-add-cart
+                document.querySelectorAll('.btn-add-cart').forEach(btn => {
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault(); // Chặn không cho nó load lại trang
+
+                        // Lấy ID sản phẩm từ cái data-id="1" m đã gán cứng ở Bước 1
+                        var pId = this.getAttribute('data-id');
+
+                        if (!pId) {
+                            console.error("M chưa gán data-id cho cái nút này kìa th l!");
+                            return;
+                        }
+
+                        // Bắn tin hiệu xuống CartController/AddToCart
+                        fetch('/Cart/AddToCart?productId=' + pId, {
+                            method: 'POST'
+                        })
+                        .then(res => {
+                            if (res.ok) return res.json();
+                            throw new Error('Lỗi server rồi m ơi!');
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                // 1. Nhảy số trên cái icon giỏ hàng cho thầy sướng
+                                const badge = document.querySelector('.cart-badge');
+                                let currentCount = parseInt(badge.textContent || 0);
+                                badge.textContent = currentCount + 1;
+
+                                // 2. Alert cho nó chuyên nghiệp
+                                alert(data.message);
+                            }
+                        })
+                        .catch(err => {
+                            alert('Lỗi: Có thể m chưa đăng nhập hoặc sai đường dẫn!');
+                            console.error(err);
+                        });
+                    });
+                });
             });
         </script>
     </body>

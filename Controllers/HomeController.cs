@@ -8,7 +8,7 @@ using WebBanHang.Services;
 
 namespace WebBanHang.Controllers
 {
-    [Authorize]
+    [Authorize] // Yêu cầu đăng nhập mặc định cho toàn bộ Controller
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -22,58 +22,70 @@ namespace WebBanHang.Controllers
             _context = context;
         }
 
-        // ===== TRANG CHỦ + HIỂN THỊ SẢN PHẨM =====
-        [AllowAnonymous]
+        // ===== TRANG CHỦ + TÌM KIẾM SẢN PHẨM =====
+        [AllowAnonymous] // Cho phép khách chưa đăng nhập vẫn xem được hàng
         public async Task<IActionResult> Index(string search)
         {
-            int role = _roleService.GetRole(User);
-            ViewBag.Role = role;
+            // Luôn gán Role để Layout hiển thị đúng các nút chức năng
+            ViewBag.Role = _roleService.GetRole(User);
 
+            // Khởi tạo truy vấn lấy sản phẩm kèm theo Danh mục (Category)
             IQueryable<Product> query = _context.Products.Include(p => p.Category);
 
+            // Xử lý logic tìm kiếm
             if (!string.IsNullOrWhiteSpace(search))
             {
-                string keyword = search.Trim().ToLower();
-                query = query.Where(p => p.Name.ToLower().Contains(keyword));
-                ViewBag.SearchQuery = search;
+                string keyword = search.Trim();
+                // Tìm kiếm theo tên sản phẩm (EF Core tự xử lý không phân biệt hoa thường tùy DB)
+                query = query.Where(p => p.Name.Contains(keyword));
+
+                // Gửi lại từ khóa ra View để hiển thị thông báo "Kết quả tìm kiếm cho..."
+                ViewBag.SearchQuery = keyword;
             }
 
             var products = await query.ToListAsync();
             return View(products);
         }
 
-        // ===== PRIVACY PAGE =====
+        // ===== TRANG CHÍNH SÁCH =====
         public IActionResult Privacy()
         {
+            ViewBag.Role = _roleService.GetRole(User);
             return View();
         }
 
-        // ===== TRANG ADMIN =====
+        // ===== TRANG ADMIN (Role 1) =====
         public IActionResult AdminPage()
         {
             int role = _roleService.GetRole(User);
+            ViewBag.Role = role;
+
             if (role != 1)
                 return RedirectToAction("AccessDenied");
+
             return View();
         }
 
-        // ===== TRANG STAFF =====
+        // ===== TRANG STAFF (Role 1 hoặc 2) =====
         public IActionResult StaffPage()
         {
             int role = _roleService.GetRole(User);
+            ViewBag.Role = role;
+
             if (role != 1 && role != 2)
                 return RedirectToAction("AccessDenied");
+
             return View();
         }
 
-        // ===== KHÔNG QUYỀN TRUY CẬP =====
+        // ===== TRANG THÔNG BÁO TỪ CHỐI TRUY CẬP =====
         [AllowAnonymous]
         public IActionResult AccessDenied()
         {
-            return Content("Bạn không có quyền truy cập!");
+            return View(); // Bạn nên tạo một View AccessDenied.cshtml cho đẹp thay vì Content()
         }
 
-        // ===== ERROR PAGE =====
+        // ===== TRANG LỖI HỆ THỐNG =====
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [AllowAnonymous]
         public IActionResult Error()

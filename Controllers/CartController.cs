@@ -180,6 +180,25 @@ namespace WebBanHang.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public async Task<IActionResult> ClearCart()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            // Lấy giỏ hàng và các CartItems
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart != null && cart.CartItems.Any())
+            {
+                _context.CartItems.RemoveRange(cart.CartItems);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index");
+        }
 
         // Trang báo thành công
         public IActionResult CheckoutSuccess()

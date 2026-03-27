@@ -1,61 +1,193 @@
-
 @{
     int role = Convert.ToInt32(ViewBag.Role ?? 0);
 }
-
-{
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - WebBanHang</title>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/WebBanHang.styles.css" asp-append-version="true" />
-    </head>
-    <body>
-        <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebBanHang</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index1">Admin</a>
-                            </li>
-                        </ul>
-                        <partial name="_LoginPartial" />
-                    </div>
-                </div>
-            </nav>
-        </header>
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bách Hóa Xanh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        :root {
+            --green-dark: #1a7a2e;
+            --green-main: #2c9e47;
+            --green-light: #e8f7ec;
+            --green-accent: #38b558;
+            --orange-flash: #ff6b00;
+            --yellow-sale: #ffd600;
+            --pink-promo: #e91e8c;
+            --red-badge: #e82828;
+            --gray-text: #444;
+            --gray-light: #f5f5f5;
+            --white: #fff;
+            --radius: 10px;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background: #f0f2f0; color: var(--gray-text); }
+        .topbar { background: var(--green-dark); padding: 6px 0; font-size: 12px; color: rgba(255,255,255,0.85); }
+        .topbar a { color: rgba(255,255,255,0.85); text-decoration: none; }
+        .topbar a:hover { color: #fff; }
+        .main-navbar { background: var(--green-main); padding: 10px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 12px rgba(44,158,71,0.25); }
+        .logo-wrap .brand-name { font-size: 22px; font-weight: 900; color: #fff; line-height: 1; }
+        .logo-wrap .brand-name span { color: var(--yellow-sale); }
+        .logo-wrap .tagline { font-size: 10px; color: rgba(255,255,255,0.8); font-style: italic; }
+        .search-bar { position: relative; }
+        .search-bar input { width: 100%; padding: 10px 50px 10px 18px; border-radius: 25px; border: 2px solid transparent; font-size: 14px; font-family: 'Be Vietnam Pro', sans-serif; outline: none; transition: border-color .2s; }
+        .search-bar input:focus { border-color: var(--yellow-sale); }
+        .search-bar button { position: absolute; right: 0; top: 0; bottom: 0; width: 46px; background: var(--green-dark); border: none; border-radius: 0 25px 25px 0; color: #fff; font-size: 16px; cursor: pointer; transition: background .2s; }
+        .search-bar button:hover { background: #145520; }
+        .location-btn { background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.45); border-radius: 8px; padding: 8px 14px; color: #fff; font-size: 13px; cursor: pointer; white-space: nowrap; transition: background .2s; }
+        .location-btn:hover { background: rgba(255,255,255,0.28); }
+        .nav-action-btn { background: none; border: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; padding: 0 8px; }
+        .nav-action-btn i { font-size: 20px; }
+        .cart-badge { background: var(--yellow-sale); color: var(--green-dark); border-radius: 50%; font-size: 10px; font-weight: 800; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; position: absolute; top: -6px; right: -2px; }
+        .cat-nav { background: var(--green-dark); border-bottom: 3px solid var(--green-accent); }
+        .cat-nav-toggle { background: var(--green-accent); color: #fff; border: none; padding: 10px 20px; font-size: 13px; font-weight: 700; letter-spacing: .5px; white-space: nowrap; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; }
+        .cat-nav-toggle i { font-size: 16px; margin-right: 6px; }
+        .cat-menu-scroll { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+        .cat-menu-scroll::-webkit-scrollbar { display: none; }
+        .cat-menu-scroll a { color: rgba(255,255,255,0.9); font-size: 12.5px; font-weight: 600; padding: 10px 14px; text-decoration: none; white-space: nowrap; border-right: 1px solid rgba(255,255,255,0.12); transition: background .15s, color .15s; }
+        .cat-menu-scroll a:hover { background: rgba(255,255,255,0.15); color: var(--yellow-sale); }
+        .hero-placeholder { width: 100%; height: 280px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; text-align: center; position: relative; overflow: hidden; }
+        .hero-placeholder::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.15); }
+        .hp1 { background: linear-gradient(135deg, #1a7a2e 0%, #38b558 60%, #ffd600 100%); }
+        .hp2 { background: linear-gradient(135deg, #e82828 0%, #ff6b00 60%, #ffd600 100%); }
+        .hp3 { background: linear-gradient(135deg, #0077b6 0%, #00b4d8 60%, #90e0ef 100%); }
+        .hero-placeholder .badge-sale { background: var(--red-badge); color: #fff; font-size: 28px; font-weight: 900; padding: 6px 14px; border-radius: 6px; display: inline-block; margin-bottom: 8px; animation: pulse 1.8s ease-in-out infinite; }
+        @@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .flash-sale-bar { background: #fff; border-radius: var(--radius); padding: 14px 18px; margin: 12px 0; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+        .flash-label { background: var(--orange-flash); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; letter-spacing: 1px; white-space: nowrap; }
+        .flash-scroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+        .flash-item { min-width: 80px; text-align: center; cursor: pointer; flex-shrink: 0; }
+        .flash-item-img { width: 60px; height: 60px; border-radius: 8px; background: var(--gray-light); margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-size: 26px; transition: transform .2s; position: relative; overflow: hidden; }
+        .flash-item:hover .flash-item-img { transform: scale(1.08); }
+        .flash-item-badge { position: absolute; top: 0; left: 0; background: var(--red-badge); color: #fff; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 0 0 5px 0; }
+        .section-title { font-size: 20px; font-weight: 900; color: var(--green-dark); position: relative; padding-left: 14px; }
+        .section-title::before { content: ''; position: absolute; left: 0; top: 3px; bottom: 3px; width: 5px; background: var(--green-accent); border-radius: 3px; }
+        .product-card { background: #fff; border-radius: var(--radius); overflow: hidden; transition: box-shadow .2s, transform .2s; cursor: pointer; height: 100%; position: relative; }
+        .product-card:hover { box-shadow: 0 8px 28px rgba(44,158,71,0.18); transform: translateY(-3px); }
+        .product-img-wrap { background: var(--gray-light); height: 160px; display: flex; align-items: center; justify-content: center; font-size: 56px; position: relative; overflow: hidden; }
+        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .product-price-new { font-size: 16px; font-weight: 800; color: var(--red-badge); }
+        .btn-add-cart { width: 32px; height: 32px; background: var(--green-main); border: none; border-radius: 50%; color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background .2s, transform .15s; }
+        .promo-banner { border-radius: var(--radius); padding: 28px 32px; color: #fff; position: relative; overflow: hidden; min-height: 130px; display: flex; flex-direction: column; justify-content: center; }
+        .pb-green { background: linear-gradient(135deg, #1a7a2e, #38b558); }
+        .pb-orange { background: linear-gradient(135deg, #c94b00, #ff6b00); }
+        .btn-promo { display: inline-block; background: #fff; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; text-decoration: none; width: fit-content; }
+        .cat-grid-item { background: #fff; border-radius: var(--radius); padding: 16px 10px; text-align: center; cursor: pointer; transition: box-shadow .2s, transform .2s; }
+        .cat-grid-item:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .sidebar-cat { background: #fff; border-radius: var(--radius); overflow: hidden; }
+        .sidebar-cat-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 13px; font-weight: 600; color: #333; }
+        .sidebar-cat-item:hover { background: var(--green-light); color: var(--green-dark); }
+        footer { background: var(--green-dark); color: rgba(255,255,255,0.85); padding: 40px 0 20px; margin-top: 40px; }
+        footer h6 { color: #fff; font-weight: 800; font-size: 14px; margin-bottom: 14px; }
+        footer ul { list-style: none; padding: 0; }
+        footer ul li a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; }
+        .social-btn { width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; }
+        .fade-in { opacity: 0; transform: translateY(18px); animation: fadeUp .5s ease forwards; }
+        @@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    @if (role >= 0) {
+        <div class="topbar d-none d-md-block">
+            <div class="container d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-telephone-fill me-1"></i>Hotline: <a href="#">1800 6936</a> &nbsp;|&nbsp; <a href="#">Tra cứu đơn hàng</a></span>
+                <span>Giao nhanh 2h &nbsp;·&nbsp; <a href="#">Tải app</a></span>
+            </div>
         </div>
 
-        <footer class="border-top footer text-muted">
+        <nav class="main-navbar">
             <div class="container">
-                &copy; 2026 - WebBanHang - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <div class="row align-items-center g-2">
+                    <div class="col-auto">
+                        <div class="logo-wrap">
+                            <div class="brand-name">Bách hóa <span>XANH</span></div>
+                            <div class="tagline">Siêu thị gần nhà, giá tiết kiệm</div>
+                        </div>
+                    </div>
+                        <div class="col">
+                               <form asp-controller="Product" asp-action="Search" method="get" class="search-bar">
+                                        <input type="text" name="searchTerm" placeholder="Tìm thịt cá, rau củ, đồ gia dụng..." value="@Context.Request.Query["searchTerm"]" />
+                                         <button type="submit"><i class="bi bi-search"></i></button>
+                               </form>
+                    </div>
+                    <div class="col-auto d-flex gap-2">
+                        <a asp-controller="Cart" asp-action="Index" class="nav-action-btn position-relative text-decoration-none">
+                            <i class="bi bi-cart3"></i>
+                            <span>Giỏ hàng</span>
+                            <span class="cart-badge">0</span>
+                        </a>
+                        <div class="nav-action-btn d-none d-md-flex align-items-center">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <partial name="_LoginPartial" />
+                        </div>
+                    </div>
+                </div>
             </div>
-        </footer>
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        @await RenderSectionAsync("Scripts", required: false)
-    </body>
-    </html>
-}
+        </nav>
 
+        <div class="cat-nav">
+            <div class="container">
+                <div class="d-flex align-items-stretch">
+                    <button class="cat-nav-toggle"><i class="bi bi-list"></i> DANH MỤC SẢN PHẨM</button>
+                    <div class="cat-menu-scroll flex-grow-1">
+                        <a href="#">🔥 Khuyến Mãi Sốc</a>
+                        <a href="#">🥩 Thịt, Cá, Hải Sản</a>
+                        <a href="#">🥦 Rau, Củ, Trái Cây</a>
+                        <a href="#">🧴 Dầu Ăn, Gia Vị</a>
+                        <a href="#">🥛 Sữa Các Loại</a>
+                        <a href="#">🍺 Bia, Nước Giải Khát</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container py-3">
+            <div class="row g-3">
+                <div class="col-lg-2 d-none d-lg-block">
+                    <partial name="_Sidebar" />
+                </div>
+                <div class="col-lg-10">
+                    @RenderBody()
+
+                    @* Role buttons *@
+                    <div class="mt-4">
+                        @if (role == 1) { <a class="btn btn-warning" asp-controller="Home" asp-action="StaffPage">Trang Staff</a> }
+                        @if (role == 3) { <a class="btn btn-success" asp-controller="Home" asp-action="Privacy">Trang User</a> }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <partial name="_Footer" />
+    }
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Xử lý giỏ hàng dùng chung
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.btn-add-cart').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault(); e.stopPropagation();
+                    var pId = this.getAttribute('data-id');
+                    if (!pId) return;
+                    fetch('/Cart/AddToCart?productId=' + pId, { method: 'POST' })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                const badge = document.querySelector('.cart-badge');
+                                badge.textContent = parseInt(badge.textContent || 0) + 1;
+                                alert(data.message);
+                            }
+                        }).catch(err => alert('Lỗi kết nối!'));
+                });
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

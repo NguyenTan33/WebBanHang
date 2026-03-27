@@ -1,62 +1,209 @@
 ﻿@model WebBanHang.Models.Cart
+@{
+    Layout = null;
+}
 
-<div class="container py-5">
-    <div class="row g-4">
-        <div class="col-md-7">
-            <div class="card border-0 shadow-sm rounded-4 p-4">
-                <h4 class="fw-bold mb-4">Kiểm tra lại đơn hàng</h4>
-                <table class="table align-middle">
-                    <thead>
-                        <tr class="text-muted small">
-                            <th>Sản phẩm</th>
-                            <th class="text-center">Số lượng</th>
-                            <th class="text-end">Thành tiền</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.CartItems)
-                        {
-                            <tr>
-                                <td>@item.Product.Name</td>
-                                <td class="text-center">x @item.Quantity</td>
-                                <td class="text-end fw-bold">@((item.Product.Price * item.Quantity).ToString("N0")) đ</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                <div class="text-end mt-3">
-                    <h5>Tổng cộng: <span class="text-danger fw-bold">@Model.CartItems.Sum(x => x.Product.Price * x.Quantity).ToString("N0") đ</span></h5>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác nhận đơn hàng - Bách Hóa Xanh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+            body {
+                background-color: #f8f9fa;
+                font-family: 'Be Vietnam Pro', sans-serif;
+                color: #333;
+            }
+
+            .checkout-container {
+                max-width: 1100px;
+                margin-top: 50px;
+            }
+
+            /* Card Style */
+            .card-custom {
+                background: #fff;
+                border: none;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+                padding: 30px;
+                height: 100%;
+            }
+
+            .card-title {
+                font-weight: 700;
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
+
+            /* Table Style */
+            .table thead th {
+                border: none;
+                color: #6c757d;
+                font-size: 14px;
+                text-transform: none;
+                padding-bottom: 15px;
+            }
+
+            .table tbody td {
+                padding: 15px 0;
+                border-bottom: 1px solid #eee;
+            }
+
+            .product-name {
+                font-weight: 500;
+            }
+
+            /* Input Style */
+            .form-label {
+                font-weight: 700;
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
+
+            .form-control {
+                border: 1px solid #e0e0e0;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+                .form-control:focus {
+                    box-shadow: none;
+                    border-color: #1a7a2e;
+                }
+
+            .rounded-pill {
+                border-radius: 50px !important;
+            }
+
+            /* Alert Style */
+            .alert-custom {
+                background-color: #d1f3ff;
+                border: none;
+                color: #055160;
+                font-size: 13px;
+                border-radius: 10px;
+                padding: 12px 15px;
+            }
+
+            /* Button Style */
+            .btn-confirm {
+                background-color: #1a7a2e;
+                color: #fff;
+                border: none;
+                padding: 15px;
+                font-weight: 700;
+                font-size: 16px;
+                transition: all 0.3s;
+                box-shadow: 0 4px 12px rgba(26, 122, 46, 0.2);
+            }
+
+                .btn-confirm:hover {
+                    background-color: #145c23;
+                    transform: translateY(-2px);
+                    color: #fff;
+                }
+
+            .btn-back {
+                color: #666;
+                text-decoration: none;
+                font-size: 14px;
+                display: inline-flex;
+                align-items: center;
+                margin-bottom: 20px;
+                transition: color 0.2s;
+            }
+
+                .btn-back:hover {
+                    color: #1a7a2e;
+                }
+
+            .price-red {
+                color: #e82828;
+                font-weight: 700;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container checkout-container mb-5">
+        <a asp-controller="Cart" asp-action="Index" class="btn-back">
+            <i class="bi bi-chevron-left me-1"></i> Quay lại giỏ hàng
+        </a>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <h4 class="card-title">Kiểm tra lại đơn hàng</h4>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th width="50%">Sản phẩm</th>
+                                    <th class="text-center">Số lượng</th>
+                                    <th class="text-end">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.CartItems != null)
+                                {
+                                    @foreach (var item in Model.CartItems)
+                                    {
+                                        <tr>
+                                            <td class="product-name">@item.Product.Name</td>
+                                            <td class="text-center text-muted">x @item.Quantity</td>
+                                            <td class="text-end fw-bold">@((item.Product.Price * item.Quantity).ToString("N0")) đ</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-end mt-4">
+                        <h5 class="fw-bold">
+                            Tổng cộng: <span class="price-red fs-4 ms-2">@Model.CartItems.Sum(x => x.Product.Price * x.Quantity).ToString("N0") đ</span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <h4 class="card-title">Thông tin giao hàng</h4>
+                    <form asp-action="Checkout" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Họ và tên</label>
+                            <input type="text" name="fullName" class="form-control rounded-pill" placeholder="Nhập tên vào..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" name="phone" class="form-control rounded-pill" placeholder="Nhập SĐT" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Địa chỉ nhận hàng</label>
+                            <textarea name="address" class="form-control" style="border-radius: 15px;" rows="4" placeholder="Nhập địa chỉ (ví dụ :120 Yên Lãng...)" required></textarea>
+                        </div>
+
+                        <div class="alert alert-custom d-flex align-items-center mb-4">
+                            <div>
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                Bấm xác nhận mua hàng để cập nhật đơn hàng ♥
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-confirm w-100 rounded-pill text-uppercase">
+                            Xác nhận mua hàng
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-5">
-            <div class="card border-0 shadow-lg rounded-4 p-4 bg-light">
-                <h4 class="fw-bold mb-4">Thông tin giao hàng</h4>
-                <form asp-action="Checkout" method="post">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Họ và tên</label>
-                        <input type="text" name="fullName" class="form-control rounded-pill" placeholder="Nhập tên vào..." required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Số điện thoại</label>
-                        <input type="text" name="phone" class="form-control rounded-pill" placeholder="Nhập SĐT" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Địa chỉ nhận hàng</label>
-                        <textarea name="address" class="form-control rounded-4" rows="3" placeholder="Nhập địa chỉ (ví dụ :120 Yên Lãng...)" required></textarea>
-                    </div>
-
-                    <div class="alert alert-info small">
-                        <i class="bi bi-info-circle me-1"></i> Bấm xác nhận mua hàng để cập nhật đơn hàng ♥
-                    </div>
-
-                    <a asp-controller="Cart" asp-action="CheckoutSuccess"
-                       class="btn btn-success w-100 py-3 rounded-pill fw-bold shadow text-decoration-none">
-                        XÁC NHẬN MUA HÀNG
-                    </a>
-                </form>
-            </div>
-        </div>
     </div>
-</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

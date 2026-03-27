@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebBanHang.Models
 {
@@ -15,5 +16,11 @@ namespace WebBanHang.Models
         public int Amount { get; set; }
 
         public string Image { get; set; }
+
+        // Foreign key
+        public int? CategoryId { get; set; }
+
+        [ForeignKey("CategoryId")]
+        public Category? Category { get; set; }
     }
 }

@@ -45,6 +45,12 @@
 </div>
 
 <!-- ===== FLASH SALE ===== -->
+//    1 _ Rau  (CatoriesID)
+//    2 _ Thịt 
+//    3_ Trái Cây
+//    4_ Hải Sản
+//    5_ Đồ Uống
+//    6_ Bánh Kẹo
 <div class="flash-sale-bar d-flex align-items-center gap-3 mb-3">
     <div class="flash-label text-center">FLASH<br><span>SALE</span></div>
     <div class="flash-scroll flex-grow-1 d-flex gap-3 overflow-auto">
@@ -56,10 +62,45 @@
             <div class="flash-item-img">🍺<span class="flash-item-badge">-20%</span></div>
             <div class="flash-item-name">Bia</div>
         </div>
-        <div class="flash-item text-center">
-            <div class="flash-item-img">🥬<span class="flash-item-badge">-28%</span></div>
-            <div class="flash-item-name">Rau xanh</div>
-        </div>
+        <a asp-action="Index" asp-route-categoryId="1" class="text-decoration-none text-dark">
+            <div class="flash-item text-center">
+                <div class="flash-item-img">🥬<span class="flash-item-badge">-28%</span></div>
+                <div class="flash-item-name">Rau xanh</div>
+            </div>
+        </a>
+        <a asp-action="Index" asp-route-categoryId="2" class="text-decoration-none text-dark">
+            <div class="flash-item text-center">
+                <div class="flash-item-img">🥩<span class="flash-item-badge">-15%</span></div>
+                <div class="flash-item-name">Thịt tươi</div>
+            </div>
+        </a>
+        <a asp-action="Index" asp-route-categoryId="3" class="text-decoration-none text-dark">
+            <div class="flash-item text-center">
+                <div class="flash-item-img">🍎<span class="flash-item-badge">-10%</span></div>
+                <div class="flash-item-name">Trái cây</div>
+            </div>
+        </a>
+
+        <a asp-action="Index" asp-route-categoryId="4" class="text-decoration-none text-dark">
+            <div class="flash-item text-center">
+                <div class="flash-item-img">🦐<span class="flash-item-badge">-5%</span></div>
+                <div class="flash-item-name">Hải sản</div>
+            </div>
+        </a>
+
+        <a asp-action="Index" asp-route-categoryId="5" class="text-decoration-none text-dark">
+            <div class="flash-item text-center">
+                <div class="flash-item-img">🥤<span class="flash-item-badge">Mới</span></div>
+                <div class="flash-item-name">Đồ uống</div>
+            </div>
+        </a>
+
+        <a asp-action="Index" asp-route-categoryId="6" class="text-decoration-none text-dark">
+            <div class="flash-item text-center">
+                <div class="flash-item-img">🍪<span class="flash-item-badge">Hot</span></div>
+                <div class="flash-item-name">Bánh kẹo</div>
+            </div>
+        </a>
     </div>
 </div>
 

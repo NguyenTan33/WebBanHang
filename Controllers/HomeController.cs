@@ -24,22 +24,24 @@ namespace WebBanHang.Controllers
 
         // ===== TRANG CHỦ + TÌM KIẾM SẢN PHẨM =====
         [AllowAnonymous] // Cho phép khách chưa đăng nhập vẫn xem được hàng
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search, int? categoryId)
         {
-            // Luôn gán Role để Layout hiển thị đúng các nút chức năng
             ViewBag.Role = _roleService.GetRole(User);
-
-            // Khởi tạo truy vấn lấy sản phẩm kèm theo Danh mục (Category)
             IQueryable<Product> query = _context.Products.Include(p => p.Category);
 
-            // Xử lý logic tìm kiếm
-            if (!string.IsNullOrWhiteSpace(search))
+            // Trường hợp 1: Nếu người dùng bấm vào nút "Lọc theo loại"
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+                ViewBag.CurrentCategory = categoryId.Value;
+                // Xóa trắng SearchQuery ở View nếu muốn "lọc loại" đè lên "tìm kiếm"
+                ViewBag.SearchQuery = null;
+            }
+            // Trường hợp 2: Nếu người dùng gõ ô Search (và không bấm nút loại)
+            else if (!string.IsNullOrWhiteSpace(search))
             {
                 string keyword = search.Trim();
-                // Tìm kiếm theo tên sản phẩm (EF Core tự xử lý không phân biệt hoa thường tùy DB)
                 query = query.Where(p => p.Name.Contains(keyword));
-
-                // Gửi lại từ khóa ra View để hiển thị thông báo "Kết quả tìm kiếm cho..."
                 ViewBag.SearchQuery = keyword;
             }
 

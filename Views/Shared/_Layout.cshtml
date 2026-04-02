@@ -155,10 +155,19 @@
                     @RenderBody()
 
                     @* Role buttons *@
-                    <div class="mt-4">
-                        @if (role == 1) { <a class="btn btn-warning" asp-controller="Home" asp-action="StaffPage">Trang Staff</a> }
-                        @if (role == 3) { <a class="btn btn-success" asp-controller="Home" asp-action="Privacy">Trang User</a> }
-                    </div>
+                    <div class="mt-5 border-top pt-3">
+                    @if (role == 1) 
+                    { 
+                        <a class="btn btn-warning fw-bold" asp-controller="Home" asp-action="StaffPage">TRANG STAFF</a> 
+                        <a class="btn btn-danger fw-bold ms-2" asp-controller="Products" asp-action="Index">
+                            <i class="bi bi-plus-circle me-1"></i> THÊM SẢN PHẨM MỚI
+                        </a>
+                    }
+                    @if (role == 3) 
+                    { 
+                        <a class="btn btn-success fw-bold" asp-controller="Home" asp-action="Privacy">TRANG USER</a> 
+                    }
+                </div>
                 </div>
             </div>
         </div>

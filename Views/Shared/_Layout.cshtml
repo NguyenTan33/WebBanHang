@@ -100,21 +100,41 @@
             </div>
         </div>
 
-        <nav class="main-navbar">
+        <nav class="main-navbar py-2">
             <div class="container">
-                <div class="row align-items-center g-2">
+                <div class="row align-items-center g-3">
                     <div class="col-auto">
                         <div class="logo-wrap">
                             <div class="brand-name">Bách hóa <span>XANH</span></div>
                             <div class="tagline">Siêu thị gần nhà, giá tiết kiệm</div>
                         </div>
                     </div>
-                        <div class="col">
-                               <form asp-controller="Product" asp-action="Search" method="get" class="search-bar">
-                                        <input type="text" name="searchTerm" placeholder="Tìm thịt cá, rau củ, đồ gia dụng..." value="@Context.Request.Query["searchTerm"]" />
-                                         <button type="submit"><i class="bi bi-search"></i></button>
-                               </form>
+
+                    <div class="col d-none d-lg-block">
+                        <div id="navBannerCarousel" class="carousel slide nav-mini-carousel shadow-sm rounded" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <div class="nav-hero-item bg-success text-white p-2 rounded d-flex align-items-center justify-content-between">
+                                        <div class="ps-3">
+                                            <span class="badge bg-danger mb-1">-37%</span>
+                                            <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">THỊT CÁ TƯƠI NGON, GIÁ RẺ</h6>
+                                        </div>
+                                        <i class="bi bi-basket2-fill pe-3 fs-3 opacity-50"></i>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <div class="nav-hero-item bg-warning text-dark p-2 rounded d-flex align-items-center justify-content-between">
+                                        <div class="ps-3">
+                                            <span class="badge bg-danger mb-1">FLASH SALE</span>
+                                            <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">GIÁ SỐC CUỐI TUẦN GIẢM 49%</h6>
+                                        </div>
+                                        <i class="bi bi-lightning-charge-fill pe-3 fs-3 text-danger"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="col-auto d-flex gap-2">
                         <a asp-controller="Cart" asp-action="Index" class="nav-action-btn position-relative text-decoration-none">
                             <i class="bi bi-cart3"></i>

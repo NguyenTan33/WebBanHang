@@ -150,36 +150,36 @@ namespace WebBanHang.Controllers
             return RedirectToAction("Index");
         }
         // 5. Thanh toán (Trừ kho + Xóa giỏ - Cú chốt demo cho thầy)
-        [HttpPost]
-        public async Task<IActionResult> Checkout()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .ThenInclude(ci => ci.Product)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+        //[HttpPost]
+        //public async Task<IActionResult> Checkout()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var cart = await _context.Carts
+        //        .Include(c => c.CartItems)
+        //        .ThenInclude(ci => ci.Product)
+        //        .FirstOrDefaultAsync(c => c.UserId == userId);
 
-            if (cart != null && cart.CartItems.Any())
-            {
-                foreach (var item in cart.CartItems)
-                {
-                    if (item.Product != null)
-                    {
-                        // Trừ số lượng tồn kho của sản phẩm
-                        item.Product.Amount -= item.Quantity;
-                        if (item.Product.Amount < 0) item.Product.Amount = 0;
-                    }
-                }
+        //    if (cart != null && cart.CartItems.Any())
+        //    {
+        //        foreach (var item in cart.CartItems)
+        //        {
+        //            if (item.Product != null)
+        //            {
+        //                // Trừ số lượng tồn kho của sản phẩm
+        //                item.Product.Amount -= item.Quantity;
+        //                if (item.Product.Amount < 0) item.Product.Amount = 0;
+        //            }
+        //        }
 
-                // Xóa các món đồ trong giỏ sau khi thanh toán
-                _context.CartItems.RemoveRange(cart.CartItems);
-                await _context.SaveChangesAsync();
+        //        // Xóa các món đồ trong giỏ sau khi thanh toán
+        //        _context.CartItems.RemoveRange(cart.CartItems);
+        //        await _context.SaveChangesAsync();
 
-                return RedirectToAction("CheckoutSuccess");
-            }
+        //        return RedirectToAction("CheckoutSuccess");
+        //    }
 
-            return RedirectToAction("Index");
-        }
+        //    return RedirectToAction("Index");
+        //}
         [HttpPost]
         public async Task<IActionResult> ClearCart()
         {
@@ -205,5 +205,24 @@ namespace WebBanHang.Controllers
         {
             return View();
         }
+        public async Task<IActionResult> ChoosePaymentMethod()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .ThenInclude(ci => ci.Product)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null || !cart.CartItems.Any()) return RedirectToAction("Index");
+
+            // Tính tổng tiền đơn hàng
+            decimal totalAmount = cart.CartItems.Sum(item => item.Quantity * item.Product.Price);
+
+            // Gửi sang View
+            ViewBag.TotalAmount = totalAmount;
+
+            return View();
+        }
     }
+
 }

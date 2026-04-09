@@ -8,7 +8,7 @@ using WebBanHang.Services;
 
 namespace WebBanHang.Controllers
 {
-    [Authorize] // Yêu cầu đăng nhập mặc định cho toàn bộ Controller
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -22,72 +22,58 @@ namespace WebBanHang.Controllers
             _context = context;
         }
 
-        // ===== TRANG CHỦ + TÌM KIẾM SẢN PHẨM =====
-        [AllowAnonymous] // Cho phép khách chưa đăng nhập vẫn xem được hàng
-        public async Task<IActionResult> Index(string search, int? categoryId)
+        // ===== TRANG CHỦ + HIỂN THỊ SẢN PHẨM =====
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string search)
         {
-            ViewBag.Role = _roleService.GetRole(User);
+            int role = _roleService.GetRole(User);
+            ViewBag.Role = role;
+
             IQueryable<Product> query = _context.Products.Include(p => p.Category);
 
-            // Trường hợp 1: Nếu người dùng bấm vào nút "Lọc theo loại"
-            if (categoryId.HasValue)
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(p => p.CategoryId == categoryId.Value);
-                ViewBag.CurrentCategory = categoryId.Value;
-                // Xóa trắng SearchQuery ở View nếu muốn "lọc loại" đè lên "tìm kiếm"
-                ViewBag.SearchQuery = null;
-            }
-            // Trường hợp 2: Nếu người dùng gõ ô Search (và không bấm nút loại)
-            else if (!string.IsNullOrWhiteSpace(search))
-            {
-                string keyword = search.Trim();
-                query = query.Where(p => p.Name.Contains(keyword));
-                ViewBag.SearchQuery = keyword;
+                string keyword = search.Trim().ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(keyword));
+                ViewBag.SearchQuery = search;
             }
 
             var products = await query.ToListAsync();
             return View(products);
         }
 
-        // ===== TRANG CHÍNH SÁCH =====
+        // ===== PRIVACY PAGE =====
         public IActionResult Privacy()
         {
-            ViewBag.Role = _roleService.GetRole(User);
             return View();
         }
 
-        // ===== TRANG ADMIN (Role 1) =====
+        // ===== TRANG ADMIN =====
         public IActionResult AdminPage()
         {
             int role = _roleService.GetRole(User);
-            ViewBag.Role = role;
-
             if (role != 1)
                 return RedirectToAction("AccessDenied");
-
             return View();
         }
 
-        // ===== TRANG STAFF (Role 1 hoặc 2) =====
+        // ===== TRANG STAFF =====
         public IActionResult StaffPage()
         {
             int role = _roleService.GetRole(User);
-            ViewBag.Role = role;
-
             if (role != 1 && role != 2)
                 return RedirectToAction("AccessDenied");
-
             return View();
         }
 
-        // ===== TRANG THÔNG BÁO TỪ CHỐI TRUY CẬP =====
+        // ===== KHÔNG QUYỀN TRUY CẬP =====
         [AllowAnonymous]
         public IActionResult AccessDenied()
         {
-            return View(); // Bạn nên tạo một View AccessDenied.cshtml cho đẹp thay vì Content()
+            return Content("Bạn không có quyền truy cập!");
         }
 
-        // ===== TRANG LỖI HỆ THỐNG =====
+        // ===== ERROR PAGE =====
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [AllowAnonymous]
         public IActionResult Error()

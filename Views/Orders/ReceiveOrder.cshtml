@@ -1,0 +1,36 @@
+﻿@model IEnumerable<WebBanHang.Models.Order>
+
+<div class="fcard">
+    <div class="p-3 border-bottom d-flex justify-content-between">
+        <h5 class="fw-bold"><i class="bi bi-cart-check-fill text-success"></i> ĐƠN CHỜ SOẠN</h5>
+        <span class="badge bg-danger">Có @Model.Count() đơn mới</span>
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Khách hàng</th>
+                <th>Địa chỉ</th>
+                <th>Tổng tiền</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><b>@item.UserId</b></td>
+                    <td>@item.Address</td>
+                    <td class="text-success fw-bold">
+                        @item.OrderDetails.Sum(x => x.Price).ToString("N0") ₫
+                    </td>
+                    <td>
+                        <a href="/Orders/Prepare/@item.Id" class="btn btn-sm btn-primary">
+                            Bắt đầu soạn hàng
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

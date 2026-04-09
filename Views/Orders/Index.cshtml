@@ -1,0 +1,60 @@
+﻿@model IEnumerable<WebBanHang.Models.Order>
+@{
+    ViewData["Title"] = "Đơn hàng mới";
+    Layout = "_Layout_Admin";
+}
+
+<div class="mb-4">
+    <h2 style="font-weight: 900; color: var(--green-dark);">
+        <i class="bi bi-bell-fill me-2"></i> ĐƠN HÀNG MỚI CHỜ DUYỆT
+    </h2>
+    <p class="text-muted">Các đơn hàng khách vừa đặt cần xác nhận để soạn hàng.</p>
+</div>
+
+<div class="fcard" style="background:#fff; border-radius:14px; box-shadow:0 4px 15px rgba(0,0,0,0.05); overflow:hidden;">
+    <table class="table align-middle m-0">
+        <thead style="background:#f9f9f9;">
+            <tr>
+                <th style="padding:15px;">Khách hàng</th>
+                <th>Địa chỉ & SĐT</th>
+                <th>Thời gian đặt</th>
+                <th style="text-align:right; padding:15px;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="padding:15px;">
+                        <div style="font-weight:700; color:#333;">@item.FullName</div>
+                        <div class="badge bg-warning text-dark" style="font-size:10px;">ĐANG CHỜ</div>
+                    </td>
+                    <td>
+                        <div style="font-size:13px;">@item.Address</div>
+                        <div style="font-size:12px; color:var(--green-main); font-weight:600;">@item.Phone</div>
+                    </td>
+                    <td style="font-size:13px; color:#999;">
+                        @item.OrderDate.ToString("HH:mm - dd/MM/yyyy")
+                    </td>
+                    <td style="text-align:right; padding:15px;">
+                        <form asp-action="ReceiveOrder" asp-route-id="@item.Id" method="post">
+                            <button type="submit" class="btn btn-sm fw-bold"
+                                    style="background:var(--green-main); color:#fff; border-radius:20px; padding:6px 20px;">
+                                <i class="bi bi-box-arrow-in-down"></i> NHẬN ĐƠN NGAY
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="4" class="text-center p-5 text-muted">
+                        <i class="bi bi-inbox" style="font-size:40px;"></i>
+                        <p class="mt-2">Hiện tại không có đơn hàng mới nào.</p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

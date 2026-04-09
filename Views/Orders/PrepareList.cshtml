@@ -1,0 +1,49 @@
+﻿@model IEnumerable<WebBanHang.Models.Order>
+@{
+    ViewData["Title"] = "Danh sách chờ soạn";
+    Layout = "_Layout_Admin";
+}
+
+<div class="mb-4">
+    <h2 style="font-weight: 900; color: var(--green-dark);">
+        <i class="bi bi-box-seam-fill me-2"></i> ĐƠN ĐANG SOẠN HÀNG
+    </h2>
+    <p class="text-muted">Đây là nơi chứa các đơn ông đã duyệt. Hãy đi lấy hàng thôi!</p>
+</div>
+
+<div class="fcard" style="background:#fff; border-radius:14px; box-shadow:0 4px 15px rgba(0,0,0,0.05); overflow:hidden;">
+    <table class="table align-middle m-0">
+        <thead style="background:#e8f7ec;">
+            <tr>
+                <th style="padding:15px;">Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Trạng thái</th>
+                <th style="text-align:right; padding:15px;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="padding:15px;"><b>#@item.Id</b></td>
+                    <td>
+                        <div style="font-weight:700;">@item.UserId</div>
+                        <div style="font-size:12px; color:#666;">@item.Address</div>
+                    </td>
+                    <td>
+                        <span class="badge" style="background:var(--green-light); color:var(--green-dark); border:1px solid var(--green-main);">
+                            Đang lấy hàng
+                        </span>
+                    </td>
+                    <td style="text-align:right; padding:15px;">
+                        @* Nút này để nhảy vào trang có Checklist tích chọn từng món *@
+                        <a asp-action="Process" asp-route-id="@item.Id" class="btn btn-sm btn-primary fw-bold"
+                               style="border-radius:20px; padding:6px 20px;">
+                            <i class="bi bi-list-check"></i> Soạn Đơn
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

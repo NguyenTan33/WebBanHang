@@ -1,0 +1,94 @@
+﻿@model WebBanHang.Models.Order
+@{
+    ViewData["Title"] = "Soạn hàng đơn #" + Model.Id;
+    Layout = "_Layout_Admin";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 mb-4" style="border-radius:15px;">
+            <div class="card-body">
+                <h5 class="fw-bold text-success mb-3"><i class="bi bi-person-badge"></i> Thông tin giao hàng</h5>
+                <div class="mb-2"><strong>Người nhận:</strong> @Model.FullName</div>
+                <div class="mb-2"><strong>Số điện thoại:</strong> <span class="text-primary">@Model.Phone</span></div>
+                <div class="mb-3"><strong>Địa chỉ:</strong> <small class="text-muted">@Model.Address</small></div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <span>Tổng đơn:</span>
+                    <span class="fw-bold text-danger">
+                        @Model.OrderDetails.Sum(x => x.Price).ToString("N0")₫
+                    </span>
+                </div>
+            </div>
+        </div>
+        <a asp-action="PrepareList" class="btn btn-light w-100" style="border-radius:10px;">
+            <i class="bi bi-arrow-left"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0" style="border-radius:15px; overflow:hidden;">
+            <div class="card-header bg-white py-3">
+                <h5 class="m-0 fw-bold"><i class="bi bi-list-check text-success"></i> Danh sách lấy hàng</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush" id="picking-list">
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <div class="list-group-item d-flex align-items-center py-3">
+                            <div class="form-check me-3">
+                                <input class="form-check-input item-checkbox" type="checkbox" style="width:25px; height:25px; cursor:pointer;">
+                            </div>
+                            <img src="@item.Product.Image" style="width:60px; height:60px; object-fit:cover; border-radius:8px;" class="me-3 border">
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">@item.Product.Name</div>
+                                <div class="text-muted small">Đơn giá: @item.Price.ToString("N0")₫</div>
+                            </div>
+                            <div class="text-end">
+                                <div class="badge bg-danger fs-6">SL: @item.Quantity</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <div class="card-footer bg-light p-3">
+                <form asp-action="ExportOrder" asp-route-id="@Model.Id" method="post">
+                    <button type="submit" id="btnExport" class="btn btn-secondary btn-lg w-100 fw-bold" disabled style="border-radius:12px;">
+                        <i class="bi bi-truck"></i> XÁC NHẬN XUẤT KHO (0/@Model.OrderDetails.Count)
+                    </button>
+                </form>
+                <p id="msg-helper" class="text-center mt-2 small text-muted">Vui lòng tích chọn đủ sản phẩm để xuất kho.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.item-checkbox').forEach(chk => {
+            chk.addEventListener('change', function() {
+                const totalItems = document.querySelectorAll('.item-checkbox').length;
+                const checkedItems = document.querySelectorAll('.item-checkbox:checked').length;
+                const btn = document.getElementById('btnExport');
+                const helper = document.getElementById('msg-helper');
+
+                // Cập nhật chữ trên nút
+                btn.innerHTML = `<i class="bi bi-truck"></i> XÁC NHẬN XUẤT KHO (${checkedItems}/${totalItems})`;
+
+                // Nếu tích đủ thì cho bấm nút
+                if (checkedItems === totalItems) {
+                    btn.disabled = false;
+                    btn.classList.replace('btn-secondary', 'btn-success');
+                    helper.innerHTML = "✨ Đã gom đủ hàng! Sẵn sàng xuất kho.";
+                    helper.classList.add('text-success');
+                } else {
+                    btn.disabled = true;
+                    btn.classList.replace('btn-success', 'btn-secondary');
+                    helper.innerHTML = "Vui lòng tích chọn đủ sản phẩm để xuất kho.";
+                    helper.classList.remove('text-success');
+                }
+            });
+        });
+    </script>
+}

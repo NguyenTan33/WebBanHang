@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebBanHang.Data;
 using WebBanHang.Models;
 
@@ -52,8 +53,19 @@ namespace WebBanHang.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            if (IsAdmin()==1)
+            // 1. Kiểm tra quyền Admin trước
+            // Vì IsAdmin() trả về true/false nên chỉ cần viết thế này:
+            if (IsAdmin() == 1)
+            {
+                // Nếu KHÔNG PHẢI Admin, đuổi ngay về trang chủ
                 return RedirectToAction("Index", "Home");
+            }
+
+            // 2. Nếu là Admin, chuẩn bị dữ liệu cho Dropdown phân loại
+            // Lấy Id để lưu vào database, lấy Name để hiện chữ (Thịt, Cá, Trứng, Sữa...)
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+
+            // 3. Trả về trang Thêm sản phẩm
             return View();
         }
 
@@ -77,48 +89,28 @@ namespace WebBanHang.Controllers
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (IsAdmin() == 1)
-                return RedirectToAction("Index", "Home");
-
-            if (id == null)
-                return NotFound();
-
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-                return NotFound();
-
-            return View(product);
-        }
-
-        // POST: Products/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Amount,Image")] Product product)
-        {
-            if (IsAdmin() == 1)
-                return RedirectToAction("Index", "Home");
-
-            if (id != product.Id)
-                return NotFound();
-
-            if (ModelState.IsValid)
+            // 1. Kiểm tra quyền (IsAdmin trả về bool nên dùng dấu "!" để phủ định)
+            if (IsAdmin()==1)
             {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                return RedirectToAction(nameof(Index));
+                // Nếu KHÔNG PHẢI Admin thì "mời" ra trang chủ
+                return RedirectToAction("Index", "Home");
             }
+
+            // 2. Kiểm tra ID đầu vào
+            if (id == null) return NotFound();
+
+            // 3. Tìm sản phẩm trong Database
+            var product = await _context.Products.FindAsync(id);
+            if (product == null) return NotFound();
+
+            // 4. QUAN TRỌNG: Nạp danh sách Category để ô chọn (Thịt, Cá, Sữa...) hiển thị được
+            // Tham số cuối 'product.CategoryId' giúp nó tự động chọn đúng loại của sản phẩm đó
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+
             return View(product);
         }
+
+        
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)

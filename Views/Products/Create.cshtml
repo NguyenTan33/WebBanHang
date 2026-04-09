@@ -2,24 +2,22 @@
 
 @{
     ViewData["Title"] = "Thêm sản phẩm mới";
-    Layout = "_Layout_Admin"; // Sử dụng layout chung đã tách
+    Layout = "_Layout_Admin";
 }
 
 @section Styles {
     <style>
-        /* Container bọc form */
         .form-container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
         }
-
-        /* Card bọc ngoài */
+        
         .tcard {
             background: #fff;
             border-radius: 14px;
             box-shadow: 0 2px 16px rgba(0,0,0,.07);
-            overflow: hidden;
             border: none;
+            overflow: hidden;
         }
 
         .tcard-head {
@@ -37,50 +35,47 @@
             margin: 0;
         }
 
-        /* Form styling */
         .tcard-body {
             padding: 30px 25px;
         }
 
         .form-label {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
-            color: #555;
+            color: #666;
             margin-bottom: 8px;
             display: block;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .form-control {
+        /* Style cho cả Input và Select */
+        .form-control, .form-select {
             border-radius: 10px;
             border: 1.5px solid #ececec;
-            padding: 12px 15px;
+            padding: 11px 15px;
             font-size: 14px;
-            transition: all 0.2s;
             background-color: #fafafa;
+            transition: all 0.2s;
         }
 
-            .form-control:focus {
+            .form-control:focus, .form-select:focus {
                 border-color: var(--green-main);
                 background-color: #fff;
                 box-shadow: 0 0 0 4px rgba(44, 158, 71, 0.1);
                 outline: none;
             }
 
-        /* Button styling */
         .btn-submit {
             background: linear-gradient(135deg, var(--green-main), var(--green-accent));
             color: #fff;
             border: none;
             border-radius: 25px;
-            padding: 12px 30px;
+            padding: 13px;
             font-weight: 700;
-            font-size: 15px;
+            width: 100%;
+            cursor: pointer;
             box-shadow: 0 4px 12px rgba(44, 158, 71, 0.3);
             transition: all 0.2s;
-            cursor: pointer;
-            width: 100%;
         }
 
             .btn-submit:hover {
@@ -89,35 +84,10 @@
                 color: #fff;
             }
 
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #888;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            transition: color 0.2s;
-        }
-
-            .btn-back:hover {
-                color: var(--green-main);
-            }
-
-        /* Validation message */
-        .text-danger {
-            font-size: 12px;
-            font-weight: 500;
-            margin-top: 5px;
-            display: block;
-        }
-
-        /* Image Preview (Option cho đẹp) */
         .img-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
             border: 2px dashed #ddd;
             display: flex;
             align-items: center;
@@ -130,14 +100,14 @@
 }
 
 <div class="form-container">
-    <a asp-action="Index" class="btn-back">
+    <a asp-action="Index" class="btn-back" style="text-decoration:none; color:#888; font-weight:600; display:inline-block; margin-bottom:15px;">
         <i class="bi bi-arrow-left"></i> Quay lại danh sách
     </a>
 
     <div class="tcard">
         <div class="tcard-head">
             <i class="bi bi-plus-circle-fill" style="color: var(--green-main); font-size: 20px;"></i>
-            <h1 class="tcard-title">Thêm sản phẩm mới</h1>
+            <h1 class="tcard-title">Cấu hình sản phẩm mới</h1>
         </div>
 
         <div class="tcard-body">
@@ -145,39 +115,49 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <label asp-for="Name" class="form-label">Tên sản phẩm</label>
-                        <input asp-for="Name" class="form-control" placeholder="Ví dụ: Cá lóc phi lê, Sữa tươi..." />
+                    <div class="col-md-7 mb-4">
+                        <label asp-for="Name" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="Ví dụ: Thịt heo ba rọi..." />
                         <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-5 mb-4">
+                        <label class="form-label">Loại hàng (Category) <span class="text-danger">*</span></label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                            <option value="">-- Chọn phân loại --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6 mb-4">
                         <label asp-for="Price" class="form-label">Giá bán (VNĐ)</label>
-                        <input asp-for="Price" class="form-control" type="number" placeholder="0" />
+                        <div class="input-group">
+                            <input asp-for="Price" class="form-control" type="number" />
+                            <span class="input-group-text">₫</span>
+                        </div>
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6 mb-4">
                         <label asp-for="Amount" class="form-label">Số lượng nhập kho</label>
-                        <input asp-for="Amount" class="form-control" type="number" placeholder="0" />
+                        <input asp-for="Amount" class="form-control" type="number" />
                         <span asp-validation-for="Amount" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-12 mb-4">
-                        <label asp-for="Image" class="form-label">Đường dẫn hình ảnh (URL)</label>
-                        <input asp-for="Image" class="form-control" id="imgInput" placeholder="https://..." />
-                        <span asp-validation-for="Image" class="text-danger"></span>
+                        <label asp-for="Image" class="form-label">Link hình ảnh</label>
+                        <input asp-for="Image" class="form-control" id="imgInput" placeholder="Dán URL ảnh tại đây..." />
                         
                         <div class="img-preview">
                             <img id="imgDisplay" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;" />
-                            <i id="imgIcon" class="bi bi-image" style="color: #ccc; font-size: 24px;"></i>
+                            <i id="imgIcon" class="bi bi-image" style="color: #ccc; font-size: 28px;"></i>
                         </div>
                     </div>
                 </div>
 
                 <div class="mt-4">
                     <button type="submit" class="btn-submit">
-                        <i class="bi bi-check-lg me-1"></i> Xác nhận thêm sản phẩm
+                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> TẠO SẢN PHẨM NGAY
                     </button>
                 </div>
             </form>
@@ -186,14 +166,11 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
+    <partial name="_ValidationScriptsPartial" />
     <script>
-        // Script nhỏ để xem trước ảnh khi dán link vào
+        // Xử lý xem trước ảnh
         document.getElementById('imgInput').addEventListener('input', function() {
-            const url = this.value;
+            const url = this.value.trim();
             const display = document.getElementById('imgDisplay');
             const icon = document.getElementById('imgIcon');
             

@@ -7,50 +7,18 @@
 
 @section Styles {
     <style>
-        /* GRID LAYOUT */
-        .page-grid {
-            display: grid;
-            grid-template-columns: 1fr 310px;
-            gap: 20px;
-            max-width: 1000px;
-        }
-
-        /* CARDS */
-        .fcard {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 2px 14px rgba(0,0,0,.07);
-            margin-bottom: 20px;
-            border: none;
-        }
-
-        .fcard-head {
-            padding: 15px 22px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .fcard-title {
-            font-size: 15px;
-            font-weight: 800;
-            color: #1a1a1a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        .page-grid { display: grid; grid-template-columns: 1fr 310px; gap: 20px; max-width: 1000px; }
+        .fcard { background: #fff; border-radius: 14px; box-shadow: 0 2px 14px rgba(0,0,0,.07); margin-bottom: 20px; border: none; }
+        .fcard-head { padding: 15px 22px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+        .fcard-title { font-size: 15px; font-weight: 800; color: #1a1a1a; display: flex; align-items: center; gap: 8px; }
         .fcard-title i { color: var(--green-main); }
-
         .fcard-body { padding: 22px; }
 
-        /* INPUTS */
         .field { margin-bottom: 20px; }
         .flabel { font-size: 12px; font-weight: 700; color: #666; margin-bottom: 8px; display: block; text-transform: uppercase; }
         .req { color: var(--red); }
         
-        .finput {
+        .finput, .fselect {
             width: 100%;
             padding: 11px 15px;
             border: 1.5px solid #ececec;
@@ -58,69 +26,28 @@
             font-size: 14px;
             background: #fafafa;
             transition: all 0.2s;
-        }
-
-        .finput:focus {
-            border-color: var(--green-main);
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(44,158,71,.1);
             outline: none;
         }
 
-        /* Trạng thái khi có thay đổi */
-        .finput.changed {
-            border-color: #ff6b00;
-            background: #fffdf5;
+        .finput:focus, .fselect:focus {
+            border-color: var(--green-main);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(44,158,71,.1);
         }
 
-        /* IMAGE PREVIEW */
-        .img-preview-box {
-            width: 100%;
-            aspect-ratio: 1/1;
-            border-radius: 12px;
-            background: #f8f9fa;
-            border: 2px dashed #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 15px;
-        }
+        /* Highlight khi có thay đổi */
+        .changed { border-color: #ff6b00 !important; background: #fffdf5 !important; }
 
+        .img-preview-box { width: 100%; aspect-ratio: 1/1; border-radius: 12px; background: #f8f9fa; border: 2px dashed #eee; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; margin-bottom: 15px; }
         .img-preview-box img { width: 100%; height: 100%; object-fit: cover; }
         
-        .change-badge {
-            background: #fff8e1;
-            color: #b45309;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            display: none;
-            align-items: center;
-            gap: 5px;
-        }
+        .change-badge { background: #fff8e1; color: #b45309; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: none; align-items: center; gap: 5px; }
         .change-badge.show { display: inline-flex; }
 
-        /* BUTTONS */
-        .btn-save {
-            background: linear-gradient(135deg, var(--green-main), var(--green-accent));
-            color: #fff; border: none; border-radius: 25px; padding: 12px;
-            font-weight: 700; width: 100%; box-shadow: 0 4px 12px rgba(44,158,71,0.2);
-            transition: all 0.2s;
-        }
-        .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 15px rgba(44,158,71,0.3); color: #fff; }
+        .btn-save { background: linear-gradient(135deg, var(--green-main), var(--green-accent)); color: #fff; border: none; border-radius: 25px; padding: 12px; font-weight: 700; width: 100%; box-shadow: 0 4px 12px rgba(44,158,71,0.2); transition: all 0.2s; cursor: pointer; }
+        .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 15px rgba(44,158,71,0.3); }
 
-        /* DIFF SUMMARY */
-        .diff-summary {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 20px;
-            display: none;
-        }
+        .diff-summary { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px; margin-bottom: 20px; display: none; }
         .diff-summary.show { display: block; }
         .diff-row { font-size: 12px; color: #92400e; margin-bottom: 4px; }
         .diff-row .old { text-decoration: line-through; opacity: 0.6; margin-right: 5px; }
@@ -145,25 +72,35 @@
             <div class="fcard">
                 <div class="fcard-head">
                     <div class="fcard-title"><i class="bi bi-pencil-square"></i> Nội dung sản phẩm</div>
-                    <span class="change-badge" id="changeBadge">Đã chỉnh sửa</span>
+                    <span class="change-badge" id="changeBadge"><i class="bi bi-exclamation-circle"></i> Đã chỉnh sửa</span>
                 </div>
                 <div class="fcard-body">
-                    <div class="field">
-                        <label class="flabel">Tên sản phẩm <span class="req">*</span></label>
-                        <input asp-for="Name" class="finput" id="fName" data-orig="@Model.Name" oninput="trackChange(this)" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="row">
+                        <div class="col-md-7 field">
+                            <label class="flabel">Tên sản phẩm <span class="req">*</span></label>
+                            <input asp-for="Name" class="finput" id="fName" data-orig="@Model.Name" oninput="trackChange(this)" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-5 field">
+                            <label class="flabel">Phân loại <span class="req">*</span></label>
+                            <select asp-for="CategoryId" class="fselect" id="fCategory" 
+                                    data-orig="@Model.CategoryId" 
+                                    asp-items="ViewBag.CategoryId" 
+                                    onchange="trackChange(this)">
+                                <option value="">-- Chọn phân loại --</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 field">
                             <label class="flabel">Giá bán (₫) <span class="req">*</span></label>
                             <input asp-for="Price" type="number" class="finput" id="fPrice" data-orig="@Model.Price" oninput="trackChange(this)" />
-                            <span asp-validation-for="Price" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 field">
                             <label class="flabel">Số lượng tồn <span class="req">*</span></label>
                             <input asp-for="Amount" type="number" class="finput" id="fAmount" data-orig="@Model.Amount" oninput="trackChange(this)" />
-                            <span asp-validation-for="Amount" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -176,41 +113,33 @@
 
             <div class="diff-summary" id="diffSummary">
                 <div style="font-weight: 800; font-size: 12px; margin-bottom: 8px; color: #b45309;">
-                    <i class="bi bi-info-circle-fill"></i> CÁC THAY ĐỔI:
+                    <i class="bi bi-info-circle-fill"></i> CÁC THAY ĐỔI CHƯA LƯU:
                 </div>
                 <div id="diffRows"></div>
             </div>
 
             <button type="submit" class="btn-save">
-                <i class="bi bi-cloud-check-fill"></i> CẬP NHẬT SẢN PHẨM
+                <i class="bi bi-cloud-check-fill"></i> LƯU THAY ĐỔI NGAY
             </button>
         </div>
 
         <div class="right-col">
             <div class="fcard">
-                <div class="fcard-head">
-                    <div class="fcard-title"><i class="bi bi-image"></i> Hình ảnh</div>
-                </div>
+                <div class="fcard-head"><div class="fcard-title"><i class="bi bi-image"></i> Hình ảnh</div></div>
                 <div class="fcard-body">
                     <div class="img-preview-box">
-                        <img id="previewImg" src="@Model.Image" onerror="this.src='/images/no-image.png'" />
+                        <img id="previewImg" src="@Model.Image" onerror="this.src='https://placehold.co/400x400?text=No+Image'" />
                     </div>
-                    <p style="font-size: 11px; color: #999; text-align: center;">
-                        Ảnh sẽ tự động cập nhật khi bạn thay đổi URL
-                    </p>
+                    <p style="font-size: 11px; color: #999; text-align: center;">Ảnh tự động cập nhật từ URL</p>
                 </div>
             </div>
 
             <div class="fcard">
                 <div class="fcard-body" style="padding: 15px;">
                     <div class="flabel" style="margin-bottom: 12px;">Thông tin hệ thống</div>
-                    <div style="font-size: 13px; color: #777; margin-bottom: 8px;">
-                        Mã số: <strong>#@Model.Id</strong>
-                    </div>
-                    <div style="font-size: 13px; color: #777;">
-                        Trạng thái: <span class="badge @(Model.Amount > 0 ? "bg-success" : "bg-danger")">
-                            @(Model.Amount > 0 ? "Đang bán" : "Hết hàng")
-                        </span>
+                    <div style="font-size: 13px; color: #777; margin-bottom: 8px;">Mã số: <strong>#@Model.Id</strong></div>
+                    <div style="font-size: 13px; color: #777;">Trạng thái: 
+                        <span class="badge @(Model.Amount > 0 ? "bg-success" : "bg-danger")">@(Model.Amount > 0 ? "Đang bán" : "Hết hàng")</span>
                     </div>
                 </div>
             </div>
@@ -221,23 +150,24 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Preview ảnh khi thay đổi URL
         function onUrlInput(url) {
             const img = document.getElementById('previewImg');
             if (url) img.src = url;
         }
 
-        // Theo dõi thay đổi so với dữ liệu gốc
         const FIELDS = {
-            fName: 'Tên',
-            fPrice: 'Giá',
+            fName: 'Tên sản phẩm',
+            fCategory: 'Phân loại',
+            fPrice: 'Giá bán',
             fAmount: 'Tồn kho',
             fImage: 'Ảnh'
         };
 
         function trackChange(el) {
-            const orig = el.dataset.orig;
-            if (el.value != orig) {
+            const orig = el.getAttribute('data-orig') || "";
+            const current = el.value.toString();
+            
+            if (current !== orig.toString()) {
                 el.classList.add('changed');
             } else {
                 el.classList.remove('changed');
@@ -253,7 +183,14 @@
                 const el = document.getElementById(id);
                 if (el && el.classList.contains('changed')) {
                     hasChange = true;
-                    html += `<div class="diff-row">• ${FIELDS[id]}: <span class="old">${el.dataset.orig}</span> → <span class="new">${el.value}</span></div>`;
+                    let displayValue = el.value;
+                    
+                    // Nếu là ô chọn Phân loại, lấy chữ hiển thị thay vì lấy số ID
+                    if(id === 'fCategory' && el.selectedIndex >= 0) {
+                        displayValue = el.options[el.selectedIndex].text;
+                    }
+
+                    html += `<div class="diff-row">• <strong>${FIELDS[id]}</strong>: <span class="new">${displayValue}</span></div>`;
                 }
             }
 

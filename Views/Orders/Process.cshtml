@@ -80,12 +80,12 @@
                 if (checkedItems === totalItems) {
                     btn.disabled = false;
                     btn.classList.replace('btn-secondary', 'btn-success');
-                    helper.innerHTML = "✨ Đã gom đủ hàng! Sẵn sàng xuất kho.";
+                    helper.innerHTML = "✨ Đã gom đủ hàng! Sẵn sàng xuất đơn.";
                     helper.classList.add('text-success');
                 } else {
                     btn.disabled = true;
                     btn.classList.replace('btn-success', 'btn-secondary');
-                    helper.innerHTML = "Vui lòng tích chọn đủ sản phẩm để xuất kho.";
+                    helper.innerHTML = "Vui lòng lấy đủ sản phẩm để xuất đơn.";
                     helper.classList.remove('text-success');
                 }
             });

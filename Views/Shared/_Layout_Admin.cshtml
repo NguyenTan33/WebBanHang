@@ -86,21 +86,25 @@
             <div class="sb-admin-badge"><i class="bi bi-shield-fill-check"></i> Admin Panel</div>
         </div>
 
-        <div class="sb-section">Tổng quan</div>
+        <div class="sb-section">Tổng quan & Báo Cáo</div>
         <ul class="sb-nav">
             <li><a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-            <li><a href="#"><i class="bi bi-graph-up-arrow"></i> Thống kê</a></li>
+            <li><a href="/Reports/Index"><i class="bi bi-graph-up-arrow"></i> Thống kê</a></li>
         </ul>
 
-        <div class="sb-section">Quản lý</div>
+        <div class="sb-section">Quản lý Sản Phẩm</div>
         <ul class="sb-nav">
             <li><a href="/Products" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Products" ? "active" : "")">
                 <i class="bi bi-box-seam-fill"></i> Sản phẩm</a>
             </li>
             <li><a href="#"><i class="bi bi-tags-fill"></i> Danh mục</a></li>
+        </ul>
+        <div class="sb-section">Quản Lý Giao Hàng</div>
+        <ul class="sb-nav">
+            <li><a href="/Orders/History"><i class="bi bi-tags-fill"></i>Lịch Sử Đơn Hàng</a></li>
             <li><a href="/Orders/Index"><i class="bi bi-cart-fill"></i> Đơn hàng</a></li>
             <li><a href="/Orders/PrepareList"><i class="bi bi-cart-fill"></i> Soạn Đơn</a></li>
-            <li><a href="#"><i class="bi bi-cart-fill"></i> Giao Hàng</a></li>
+            <li><a href="/Orders/Shipping"><i class="bi bi-cart-fill"></i> Giao Hàng</a></li>
         </ul>
 
         <div class="sb-section">Hệ thống</div>

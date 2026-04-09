@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Báo cáo doanh thu";
+    Layout = "_Layout_Admin";
+}
+
+<div class="container-fluid">
+    <div class="mb-4">
+        <h2 style="font-weight: 900; color: var(--green-dark);">
+            <i class="bi bi-graph-up-arrow me-2"></i> THỐNG KÊ KINH DOANH
+        </h2>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="p-3 shadow-sm" style="background: #fff; border-radius:15px; border-left: 5px solid #2c9e47;">
+                <div class="text-muted small fw-bold">HÔM NAY</div>
+                <div class="fs-4 fw-bold text-success">@ViewBag.TodayRevenue.ToString("N0") ₫</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 shadow-sm" style="background: #fff; border-radius:15px; border-left: 5px solid #0dcaf0;">
+                <div class="text-muted small fw-bold">THÁNG NÀY</div>
+                <div class="fs-4 fw-bold text-info">@ViewBag.MonthRevenue.ToString("N0") ₫</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 shadow-sm" style="background: #fff; border-radius:15px; border-left: 5px solid #ffc107;">
+                <div class="text-muted small fw-bold">TỔNG DOANH THU</div>
+                <div class="fs-4 fw-bold text-warning">@ViewBag.TotalRevenue.ToString("N0") ₫</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 shadow-sm" style="background: #fff; border-radius:15px; border-left: 5px solid #fd7e14;">
+                <div class="text-muted small fw-bold">ĐƠN THÀNH CÔNG</div>
+                <div class="fs-4 fw-bold text-orange" style="color:#fd7e14">@ViewBag.OrderCount</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius:15px;">
+        <div class="card-header bg-white py-3 border-0">
+            <h5 class="m-0 fw-bold"><i class="bi bi-bar-chart-line text-success"></i> Doanh thu 7 ngày gần nhất</h5>
+        </div>
+        <div class="card-body">
+            <canvas id="revenueChart" style="max-height: 380px; width: 100%;"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(ViewBag.ChartLabels)),
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: @Html.Raw(Json.Serialize(ViewBag.ChartData)),
+                    borderColor: '#2c9e47',
+                    backgroundColor: 'rgba(44, 158, 71, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#2c9e47',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { callback: function(v) { return v.toLocaleString() + ' ₫'; } }
+                    }
+                }
+            }
+        });
+    </script>
+}

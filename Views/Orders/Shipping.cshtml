@@ -1,0 +1,69 @@
+﻿@model IEnumerable<WebBanHang.Models.Order>
+@{
+    ViewData["Title"] = "Đang giao hàng";
+    Layout = "_Layout_Admin";
+}
+
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h2 style="font-weight: 900; color: var(--green-dark);">
+            <i class="bi bi-truck me-2"></i> ĐƠN ĐANG ĐI GIAO
+        </h2>
+        <p class="text-muted">Theo dõi các đơn hàng đang trên đường đến tay khách.</p>
+    </div>
+    <span class="badge bg-primary fs-6">@Model.Count() đơn đang đi</span>
+</div>
+
+<div class="fcard" style="background:#fff; border-radius:14px; box-shadow:0 4px 15px rgba(0,0,0,0.05); overflow:hidden;">
+    <table class="table align-middle m-0">
+        <thead style="background:#f0f7ff;">
+            <tr>
+                <th style="padding:15px;">Đơn hàng</th>
+                <th>Khách hàng & Địa chỉ</th>
+                <th>Thời gian</th>
+                <th style="text-align:right; padding:15px;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="padding:15px;">
+                        <span class="fw-bold">#@item.Id</span>
+                    </td>
+                    <td>
+                        @* Nhớ kiểm tra FullName hay CustomerName ở đây *@
+                        <div style="font-weight:700;">@item.FullName</div>
+                        
+                        @* Tính tổng tiền chuẩn: Giá x Số lượng *@
+                        <div class="text-danger fw-bold">
+                            @if (item.OrderDetails != null)
+                            {
+                                @item.OrderDetails.Sum(x => x.Price * x.Quantity).ToString("N0")
+                            }
+                            else
+                            {
+                                <span>0</span>
+                            }
+                            ₫
+                        </div>
+                        
+                        <div style="font-size:12px; color:#666;"><i class="bi bi-geo-alt"></i> @item.Address</div>
+                    </td>
+                    <td style="font-size:13px; color:#999;">
+                        Đang vận chuyển...
+                    </td>
+                    <td style="text-align:right; padding:15px;">
+                        <form asp-action="CompleteOrder" asp-route-id="@item.Id" method="post"
+                              onsubmit="return confirm('Xác nhận khách đã trả tiền và nhận đủ hàng?')">
+                            <button type="submit" class="btn btn-success fw-bold"
+                                    style="border-radius: 20px; padding: 8px 20px; font-size: 13px;">
+                                <i class="bi bi-check2-all"></i> XÁC NHẬN HOÀN TẤT
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

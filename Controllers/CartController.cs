@@ -161,6 +161,7 @@ namespace WebBanHang.Controllers
             _context.CartItems.RemoveRange(cart.CartItems);
 
             await _context.SaveChangesAsync();
+            Console.WriteLine("=====> ĐÃ LƯU ĐƠN HÀNG ID: " + order.Id);
 
             return RedirectToAction("CheckoutSuccess");
         }

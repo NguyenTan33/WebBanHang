@@ -1,43 +1,240 @@
 ﻿@model WebBanHang.Models.Product
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "_AdminLayout"; // Đảm bảo dùng đúng Layout Admin của bạn
 }
 
-<h1>Details</h1>
+@section Styles {
+    <style>
+        .page-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            max-width: 1000px;
+        }
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Amount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Amount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Image)
-        </dd>
-    </dl>
+        /* CARD STYLE */
+        .info-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 14px rgba(0,0,0,.07);
+            overflow: hidden;
+            border: none;
+        }
+
+        .info-card-head {
+            padding: 18px 25px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .info-card-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--green-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* DATA ROW STYLE */
+        .info-body {
+            padding: 25px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+            .info-row:last-child {
+                border-bottom: none;
+            }
+
+        .info-label {
+            width: 150px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* IMAGE PREVIEW */
+        .detail-img-box {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .detail-img-box img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        /* BUTTONS */
+        .action-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-edit-lg {
+            background: linear-gradient(135deg, var(--green-main), var(--green-accent));
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(44,158,71,0.25);
+            transition: all 0.2s;
+        }
+
+            .btn-edit-lg:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 18px rgba(44,158,71,0.35);
+                color: #fff;
+            }
+
+        .btn-back-outline {
+            border: 1.5px solid #ddd;
+            color: #666;
+            border-radius: 25px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+            .btn-back-outline:hover {
+                background: #f5f5f5;
+                color: #333;
+            }
+
+        .price-tag {
+            color: var(--red);
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        @@media (max-width: 850px) {
+            .page-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}
+
+<div class="breadcrumb-bar mb-4">
+    <a asp-action="Index" style="text-decoration: none; color: #888; font-size: 14px; font-weight: 600;">
+        <i class="bi bi-chevron-left"></i> Quay lại danh sách
+    </a>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="page-grid">
+    <div class="left-col">
+        <div class="info-card">
+            <div class="info-card-head">
+                <h2 class="info-card-title">
+                    <i class="bi bi-info-circle-fill"></i> Thông tin chi tiết sản phẩm
+                </h2>
+                <span class="id-chip" style="background: #f0f0f0; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #999;">
+                    #@Model.Id
+                </span>
+            </div>
+            
+            <div class="info-body">
+                <div class="info-row">
+                    <div class="info-label">Tên sản phẩm</div>
+                    <div class="info-value">@Model.Name</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Giá niêm yết</div>
+                    <div class="info-value price-tag">@Model.Price.ToString("N0")₫</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Lượng tồn kho</div>
+                    <div class="info-value">
+                        @Model.Amount đơn vị
+                        <span class="ms-2 badge @(Model.Amount > 10 ? "bg-success" : (Model.Amount > 0 ? "bg-warning" : "bg-danger"))" style="border-radius: 20px;">
+                            @(Model.Amount > 10 ? "Sẵn hàng" : (Model.Amount > 0 ? "Sắp hết" : "Hết hàng"))
+                        </span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Đường dẫn ảnh</div>
+                    <div class="info-value" style="font-size: 12px; color: #999; word-break: break-all;">
+                        @Model.Image
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-col">
+        <div class="info-card mb-3">
+            <div class="info-body" style="padding: 15px;">
+                <div class="detail-img-box">
+                    @if (!string.IsNullOrWhiteSpace(Model.Image))
+                    {
+                        <img src="@Model.Image" alt="@Model.Name" onerror="this.src='/images/no-image.png'" />
+                    }
+                    else
+                    {
+                        <i class="bi bi-image" style="font-size: 50px; color: #ddd;"></i>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="action-btns">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit-lg">
+                <i class="bi bi-pencil-square me-1"></i> Chỉnh sửa thông tin
+            </a>
+            <a asp-action="Index" class="btn-back-outline">
+                Trở về trang chủ
+            </a>
+        </div>
+        
+        <div class="mt-4 p-3" style="background: #fff8e1; border-radius: 12px; border: 1px dashed #ffe082;">
+            <p style="margin: 0; font-size: 12px; color: #856404; line-height: 1.5;">
+                <i class="bi bi-lightbulb-fill me-1"></i>
+                <strong>Lưu ý:</strong> Mọi thay đổi về giá và số lượng sẽ ảnh hưởng trực tiếp đến hiển thị trên trang bán hàng của khách hàng.
+            </p>
+        </div>
+    </div>
 </div>

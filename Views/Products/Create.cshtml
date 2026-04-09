@@ -1,46 +1,210 @@
 ﻿@model WebBanHang.Models.Product
 
 @{
-    ViewData["Title"] = "Create";
-    Layout = null;
+    ViewData["Title"] = "Thêm sản phẩm mới";
+    Layout = "_Layout_Admin"; // Sử dụng layout chung đã tách
 }
 
-<h1>Create</h1>
+@section Styles {
+    <style>
+        /* Container bọc form */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-<h4>Product</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        /* Card bọc ngoài */
+        .tcard {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(0,0,0,.07);
+            overflow: hidden;
+            border: none;
+        }
+
+        .tcard-head {
+            padding: 20px 25px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tcard-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--green-dark);
+            margin: 0;
+        }
+
+        /* Form styling */
+        .tcard-body {
+            padding: 30px 25px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1.5px solid #ececec;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background-color: #fafafa;
+        }
+
+            .form-control:focus {
+                border-color: var(--green-main);
+                background-color: #fff;
+                box-shadow: 0 0 0 4px rgba(44, 158, 71, 0.1);
+                outline: none;
+            }
+
+        /* Button styling */
+        .btn-submit {
+            background: linear-gradient(135deg, var(--green-main), var(--green-accent));
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 4px 12px rgba(44, 158, 71, 0.3);
+            transition: all 0.2s;
+            cursor: pointer;
+            width: 100%;
+        }
+
+            .btn-submit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 18px rgba(44, 158, 71, 0.4);
+                color: #fff;
+            }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: color 0.2s;
+        }
+
+            .btn-back:hover {
+                color: var(--green-main);
+            }
+
+        /* Validation message */
+        .text-danger {
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Image Preview (Option cho đẹp) */
+        .img-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            border: 2px dashed #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            background: #f9f9f9;
+            overflow: hidden;
+        }
+    </style>
+}
+
+<div class="form-container">
+    <a asp-action="Index" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Quay lại danh sách
+    </a>
+
+    <div class="tcard">
+        <div class="tcard-head">
+            <i class="bi bi-plus-circle-fill" style="color: var(--green-main); font-size: 20px;"></i>
+            <h1 class="tcard-title">Thêm sản phẩm mới</h1>
+        </div>
+
+        <div class="tcard-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                        <input asp-for="Name" class="form-control" placeholder="Ví dụ: Cá lóc phi lê, Sữa tươi..." />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="Price" class="form-label">Giá bán (VNĐ)</label>
+                        <input asp-for="Price" class="form-control" type="number" placeholder="0" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="Amount" class="form-label">Số lượng nhập kho</label>
+                        <input asp-for="Amount" class="form-control" type="number" placeholder="0" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12 mb-4">
+                        <label asp-for="Image" class="form-label">Đường dẫn hình ảnh (URL)</label>
+                        <input asp-for="Image" class="form-control" id="imgInput" placeholder="https://..." />
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                        
+                        <div class="img-preview">
+                            <img id="imgDisplay" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;" />
+                            <i id="imgIcon" class="bi bi-image" style="color: #ccc; font-size: 24px;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-check-lg me-1"></i> Xác nhận thêm sản phẩm
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
+    <script>
+        // Script nhỏ để xem trước ảnh khi dán link vào
+        document.getElementById('imgInput').addEventListener('input', function() {
+            const url = this.value;
+            const display = document.getElementById('imgDisplay');
+            const icon = document.getElementById('imgIcon');
+            
+            if (url) {
+                display.src = url;
+                display.style.display = 'block';
+                icon.style.display = 'none';
+            } else {
+                display.style.display = 'none';
+                icon.style.display = 'block';
+            }
+        });
+    </script>
+}

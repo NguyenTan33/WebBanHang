@@ -1,5 +1,148 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] – Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --green-dark: #1a7a2e;
+            --green-main: #2c9e47;
+            --green-light: #e8f7ec;
+            --green-accent: #38b558;
+            --yellow: #ffd600;
+            --red: #e82828;
+            --sidebar-w: 224px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: #f0f2f0;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--green-dark);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sb-brand { padding: 22px 18px 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+        .sb-brand .name { font-size: 19px; font-weight: 900; color: #fff; line-height: 1; }
+        .sb-brand .name span { color: var(--yellow); }
+        .sb-brand .tag { font-size: 10px; color: rgba(255,255,255,.6); font-style: italic; margin-top: 2px; }
+        .sb-admin-badge { margin-top: 10px; display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,.13); border-radius: 20px; padding: 3px 10px; font-size: 11px; color: rgba(255,255,255,.85); font-weight: 600; }
+
+        .sb-section { padding: 16px 14px 5px; font-size: 10px; font-weight: 800; color: rgba(255,255,255,.35); letter-spacing: 1.2px; text-transform: uppercase; }
+        .sb-nav { list-style: none; padding: 0 8px; }
+        .sb-nav li a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 9px; color: rgba(255,255,255,.72); font-size: 13px; font-weight: 600; text-decoration: none; transition: background .15s, color .15s; margin-bottom: 2px; }
+        .sb-nav li a i { font-size: 16px; width: 20px; text-align: center; }
+        .sb-nav li a:hover { background: rgba(255,255,255,.1); color: #fff; }
+        .sb-nav li a.active { background: var(--green-main); color: #fff; }
+
+        /* MAIN WRAP */
+        .main-wrap { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+        /* TOPBAR */
+        .topbar { background: #fff; padding: 13px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 50; }
+        .topbar-title { font-size: 17px; font-weight: 900; color: var(--green-dark); display: flex; align-items: center; gap: 8px; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 36px; height: 36px; background: var(--green-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
+
+        .content { padding: 24px 28px; flex: 1; }
+
+        /* TOAST */
+        .toast-stack { position: fixed; bottom: 22px; right: 22px; z-index: 400; display: flex; flex-direction: column; gap: 8px; }
+        .toast-item { background: var(--green-dark); color: #fff; border-radius: 10px; padding: 11px 18px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 9px; box-shadow: 0 4px 18px rgba(0,0,0,.2); animation: slideUp .28s ease; }
+        @@keyframes slideUp { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-wrap { margin-left: 0; }
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sb-brand">
+            <div class="name">Bách hóa <span>XANH</span></div>
+            <div class="tag">Siêu thị gần nhà, giá tiết kiệm</div>
+            <div class="sb-admin-badge"><i class="bi bi-shield-fill-check"></i> Admin Panel</div>
+        </div>
+
+        <div class="sb-section">Tổng quan</div>
+        <ul class="sb-nav">
+            <li><a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="#"><i class="bi bi-graph-up-arrow"></i> Thống kê</a></li>
+        </ul>
+
+        <div class="sb-section">Quản lý</div>
+        <ul class="sb-nav">
+            <li><a href="/Products" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Products" ? "active" : "")">
+                <i class="bi bi-box-seam-fill"></i> Sản phẩm</a>
+            </li>
+            <li><a href="#"><i class="bi bi-tags-fill"></i> Danh mục</a></li>
+            <li><a href="#"><i class="bi bi-cart-fill"></i> Đơn hàng</a></li>
+        </ul>
+
+        <div class="sb-section">Hệ thống</div>
+        <ul class="sb-nav">
+            <li><a href="#"><i class="bi bi-gear-fill"></i> Cài đặt</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill"></i> Trang chủ</a></li>
+            <li><a href="/Identity/Account/Logout"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrap">
+        <div class="topbar">
+            <div class="topbar-title">
+                 @ViewData["Title"]
+            </div>
+            <div class="topbar-right">
+                <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                <span style="font-size:13px;font-weight:700;color:#444;">Admin</span>
+            </div>
+        </div>
+
+        <div class="content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <div class="toast-stack" id="toastStack"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showToast(msg, type='success') {
+            const s = document.getElementById('toastStack');
+            const t = document.createElement('div');
+            t.className = 'toast-item';
+            t.style.background = type === 'success' ? 'var(--green-dark)' : 'var(--red)';
+            t.innerHTML = '<i class="bi bi-' + (type==='success' ? 'check-circle-fill' : 'exclamation-circle-fill') + '"></i>' + msg;
+            s.appendChild(t);
+            setTimeout(() => { 
+                t.style.opacity='0'; 
+                t.style.transition='opacity .3s'; 
+                setTimeout(()=>t.remove(), 300); 
+            }, 3000);
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

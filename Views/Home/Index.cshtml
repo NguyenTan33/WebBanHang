@@ -120,7 +120,8 @@
         @foreach (var p in Model)
         {
             <div class="col fade-in">
-                <div class="product-card">
+                <div class="product-card" style="cursor: pointer;"
+                     onclick="openProductModal('@p.Name', '@p.Image', '@p.Price.ToString("N0")', '@p.Id')">
                     <div class="product-img-wrap">
                         @if (!string.IsNullOrEmpty(p.Image))
                         {
@@ -135,7 +136,9 @@
                         <div class="product-name">@p.Name</div>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span class="product-price-new">@p.Price.ToString("N0")₫</span>
-                            <button class="btn-add-cart" data-id="@p.Id"><i class="bi bi-plus"></i></button>
+                            <button class="btn-add-cart" data-id="@p.Id" onclick="event.stopPropagation();">
+                                <i class="bi bi-plus"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -150,3 +153,88 @@ else
         <p>Không tìm thấy sản phẩm!</p>
     </div>
 }
+
+<div class="modal fade" id="productQuickView" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <div class="col-md-6 bg-light d-flex align-items-center justify-content-center">
+                        <img id="modalImg" src="" class="img-fluid" style="max-height: 350px; object-fit: contain;" />
+                    </div>
+                    <div class="col-md-6 p-4">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="modal"></button>
+                        <h4 id="modalName" class="fw-bold mt-3 mb-2"></h4>
+                        <div class="mb-3">
+                            <span id="modalPrice" class="text-danger fw-bold fs-4"></span>
+                        </div>
+                        <p class="text-muted small">
+                            <i class="bi bi-shield-check text-success"></i> Hàng chính hãng 100%<br />
+                            <i class="bi bi-truck text-success"></i> Giao hàng nhanh trong 2h
+                        </p>
+                        <hr />
+                        <p class="small text-secondary">Mô tả: Sản phẩm tươi ngon, đảm bảo an toàn vệ sinh thực phẩm, nguồn gốc rõ ràng từ Bách Hóa Xanh VIP PRO.</p>
+                        <div class="mt-4">
+                            <button id="modalAddBtn" class="btn btn-success btn-lg w-100 rounded-pill fw-bold">THÊM VÀO GIỎ HÀNG</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openProductModal(name, image, price, id) {
+        // 1. Đổ dữ liệu vào Modal
+        document.getElementById('modalName').innerText = name;
+        document.getElementById('modalImg').src = image || '/images/default.png';
+        document.getElementById('modalPrice').innerText = price + "₫";
+
+        const modalAddBtn = document.getElementById('modalAddBtn');
+
+        // 2. Cực kỳ quan trọng: Reset lại sự kiện cũ để không bị ấn 1 lần mà gửi 10 món
+        modalAddBtn.onclick = null;
+
+        // 3. Gán lệnh mới
+        modalAddBtn.onclick = function () {
+            // Lấy token bảo mật nếu trang có
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var postData = { productId: id };
+            if (token) {
+                postData.__RequestVerificationToken = token;
+            }
+
+            // Gửi dữ liệu đi
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: 'POST',
+                data: postData,
+                success: function (response) {
+                    alert("Đã thêm " + name + " vào giỏ hàng!");
+
+                    // Đóng modal gọn gàng
+                    var myModalEl = document.getElementById('productQuickView');
+                    var modal = bootstrap.Modal.getInstance(myModalEl);
+                    if (modal) {
+                        modal.hide();
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 401) {
+                        alert("Vui lòng đăng nhập để mua hàng m ơi!");
+                        window.location.href = "/Identity/Account/Login";
+                    } else {
+                        alert("Lỗi server! Tạm thời nút này đang nghỉ tay.");
+                    }
+                }
+            });
+        };
+
+        // 4. Hiện Modal lên
+        var myModalEl = document.getElementById('productQuickView');
+        // Nếu đã có instance cũ thì xài lại, chưa có thì tạo mới
+        var myModal = bootstrap.Modal.getInstance(myModalEl) || new bootstrap.Modal(myModalEl);
+        myModal.show();
+    }
+</script>

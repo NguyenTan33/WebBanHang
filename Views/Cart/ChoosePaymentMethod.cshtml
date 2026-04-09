@@ -43,40 +43,69 @@
                     </h4>
                 </div>
 
-                <button type="submit" id="btnSubmit" class="btn btn-success btn-lg w-100">HOÀN TẤT ĐẶT HÀNG</button>
+                <button type="button" id="btnSubmit" class="btn btn-success btn-lg w-100 font-weight-bold">OKE</button>
             </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        let paymentTimeout;
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        // Hàm ẩn hiện cái ảnh QR
         function toggleQR(show) {
             const qrArea = document.getElementById('qrArea');
-            const btnSubmit = document.getElementById('btnSubmit');
-
             if (show) {
                 qrArea.classList.remove('d-none');
-
-                // GIẢ LẬP: Sau 30 giây tự động xác nhận đơn hàng (như m yêu cầu)
-                btnSubmit.innerHTML = "Đang chờ thanh toán (30s)...";
-                btnSubmit.classList.replace('btn-success', 'btn-warning');
-
-                paymentTimeout = setTimeout(function() {
-                    document.getElementById('paymentForm').submit();
-                }, 30000);
-
             } else {
                 qrArea.classList.add('d-none');
-                btnSubmit.innerHTML = "HOÀN TẤT ĐẶT HÀNG";
-                btnSubmit.classList.replace('btn-warning', 'btn-success');
-
-                // Hủy bộ đếm nếu khách chọn lại COD
-                if (paymentTimeout) clearTimeout(paymentTimeout);
             }
         }
+
+        // Bắt sự kiện khi bấm nút OKE
+        document.getElementById('btnSubmit').addEventListener('click', function () {
+            const form = document.getElementById('paymentForm');
+            const isQR = document.getElementById('qrcode').checked;
+
+            if (isQR) {
+                // Nếu là QR -> Bật đếm ngược 30s
+                let timerInterval;
+                Swal.fire({
+                    title: 'Đang chờ thanh toán...',
+                    html: 'Hệ thống sẽ tự động xác nhận.',
+                    timer: 30000, // 30 giây
+                    timerProgressBar: true,
+                    allowOutsideClick: false, // Không cho bấm ra ngoài để tắt
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const b = Swal.getHtmlContainer().querySelector('b');
+                        timerInterval = setInterval(() => {
+                            b.textContent = Math.ceil(Swal.getTimerLeft() / 1000);
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                }).then((result) => {
+                    // Hết giờ tự động gửi form về Controller (hàm Checkout)
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        form.submit();
+                    }
+                });
+            } else {
+                // Nếu là COD -> Báo thành công 1 giây rồi gửi form luôn
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đã chốt phương thức COD',
+                    text: 'Đang xử lý đơn hàng...',
+                    timer: 1200,
+                    showConfirmButton: false
+                }).then(() => {
+                    form.submit();
+                });
+            }
+        });
     </script>
 }
 

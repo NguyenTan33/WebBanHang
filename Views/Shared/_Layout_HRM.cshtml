@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] – Quản lý nhân sự</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --green-dark: #1a7a2e;
+            --green-main: #2c9e47;
+            --green-light: #e8f7ec;
+            --green-accent: #38b558;
+            --yellow: #ffd600;
+            --red: #e82828;
+            --sidebar-w: 240px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: #f0f2f0;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--green-dark);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sb-brand { padding: 22px 18px 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+        .sb-brand .name { font-size: 19px; font-weight: 900; color: #fff; line-height: 1; }
+        .sb-brand .name span { color: var(--yellow); }
+        .sb-brand .tag { font-size: 10px; color: rgba(255,255,255,.6); font-style: italic; margin-top: 2px; }
+        .sb-admin-badge { margin-top: 10px; display: inline-flex; align-items: center; gap: 5px; background: rgba(255,193,7,0.2); border: 1px solid rgba(255,193,7,0.3); border-radius: 20px; padding: 3px 10px; font-size: 11px; color: var(--yellow); font-weight: 700; }
+
+        .sb-section { padding: 20px 14px 8px; font-size: 10px; font-weight: 800; color: rgba(255,255,255,.35); letter-spacing: 1.2px; text-transform: uppercase; }
+        .sb-nav { list-style: none; padding: 0 8px; }
+        .sb-nav li a { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 10px; color: rgba(255,255,255,.72); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all .2s; margin-bottom: 4px; }
+        .sb-nav li a i { font-size: 18px; width: 22px; text-align: center; }
+        .sb-nav li a:hover { background: rgba(255,255,255,.1); color: #fff; padding-left: 18px; }
+        .sb-nav li a.active { background: var(--green-main); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+        /* MAIN WRAP */
+        .main-wrap { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+        /* TOPBAR */
+        .topbar { background: #fff; padding: 13px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 50; }
+        .topbar-title { font-size: 17px; font-weight: 900; color: var(--green-dark); display: flex; align-items: center; gap: 8px; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 36px; height: 36px; background: var(--green-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; font-weight: 800; }
+
+        .content { padding: 24px 28px; flex: 1; }
+
+        /* TOAST */
+        .toast-stack { position: fixed; bottom: 22px; right: 22px; z-index: 400; display: flex; flex-direction: column; gap: 8px; }
+        .toast-item { background: var(--green-dark); color: #fff; border-radius: 10px; padding: 11px 18px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 9px; box-shadow: 0 4px 18px rgba(0,0,0,.2); animation: slideUp .28s ease; }
+        @@keyframes slideUp { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        @@media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-wrap { margin-left: 0; }
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sb-brand">
+            <div class="name">Bách hóa <span>XANH</span></div>
+            <div class="tag">Quản trị nội bộ nhân sự</div>
+            <div class="sb-admin-badge"><i class="bi bi-person-vcard-fill"></i> HRM Management</div>
+        </div>
+
+        <div class="sb-section">QUẢN LÝ NHÂN SỰ</div>
+        <ul class="sb-nav">
+            <li>
+                <a href="/HRM" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "HRM" ? "active" : "")">
+                    <i class="bi bi-people-fill"></i> Tài khoản nhân viên
+                </a>
+            </li>
+            <li>
+                <a href="/Role" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Role" ? "active" : "")">
+                    <i class="bi bi-shield-lock-fill"></i> Chức vụ & Quyền
+                </a>
+            </li>
+        </ul>
+
+        <div class="sb-section">Hệ thống</div>
+        <ul class="sb-nav">
+            <li><a asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door-fill"></i> Trang chủ</a></li>
+            <li><a href="/Identity/Account/Logout"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrap">
+        <div class="topbar">
+            <div class="topbar-title">
+                 <i class="bi bi-layers-half me-1"></i> @ViewData["Title"]
+            </div>
+            <div class="topbar-right">
+                <div class="avatar">H</div>
+                <div class="d-none d-sm-block">
+                    <div style="font-size:13px;font-weight:800;color:#333;line-height:1.2;">HR Manager</div>
+                    <div style="font-size:10px;color:#999;font-weight:600;text-transform:uppercase;">Cấp quyền hệ thống</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <div class="toast-stack" id="toastStack"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showToast(msg, type='success') {
+            const s = document.getElementById('toastStack');
+            const t = document.createElement('div');
+            t.className = 'toast-item';
+            t.style.background = type === 'success' ? 'var(--green-dark)' : 'var(--red)';
+            t.innerHTML = '<i class="bi bi-' + (type==='success' ? 'check-circle-fill' : 'exclamation-circle-fill') + '"></i> ' + msg;
+            s.appendChild(t);
+            setTimeout(() => { 
+                t.style.opacity='0'; 
+                t.style.transition='opacity .3s'; 
+                setTimeout(()=>t.remove(), 300); 
+            }, 3000);
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

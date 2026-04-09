@@ -1,0 +1,50 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+
+@{
+    ViewData["Title"] = "Thêm chức vụ mới";
+    Layout = "_AdminLayout";
+}
+
+@section Styles {
+    <style>
+        .form-wrap { max-width: 550px; margin: 40px auto; }
+        .tcard { background: #fff; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.06); border: none; }
+        .tcard-body { padding: 35px; }
+        .flabel { font-size: 11px; font-weight: 800; color: #888; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .finput { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1.5px solid #eee; background: #fafafa; font-size: 14px; outline: none; transition: 0.2s; }
+        .finput:focus { border-color: var(--green-main); background: #fff; box-shadow: 0 0 0 4px rgba(44,158,71,0.1); }
+        .btn-submit { background: var(--green-main); color: #fff; border: none; border-radius: 25px; padding: 13px; width: 100%; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-submit:hover { background: var(--green-dark); transform: translateY(-1px); }
+    </style>
+}
+
+<div class="form-wrap">
+    <a asp-action="Index" class="mb-3 d-inline-block text-decoration-none" style="color: #999; font-weight: 600;">
+        <i class="bi bi-arrow-left"></i> Quay lại danh sách
+    </a>
+
+    <div class="tcard">
+        <div class="tcard-body">
+            <div class="text-center mb-4">
+                <div style="width: 60px; height: 60px; background: #e8f7ec; color: var(--green-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 15px;">
+                    <i class="bi bi-shield-plus"></i>
+                </div>
+                <h4 style="font-weight: 900; color: var(--green-dark);">THÊM CHỨC VỤ MỚI</h4>
+                <p style="color: #999; font-size: 13px;">Thiết lập tên quyền hạn mới cho hệ thống</p>
+            </div>
+
+            <form asp-action="Create" method="post">
+                <div class="mb-4">
+                    <label class="flabel">Tên chức vụ (Role Name)</label>
+                    <input name="roleName" class="finput" placeholder="Ví dụ: QuanLyKho, ThuNgan..." required autofocus />
+                    <small style="color: #bbb; font-size: 11px; margin-top: 8px; display: block;">
+                        * Lưu ý: Tên nên viết liền không dấu hoặc dùng gạch dưới.
+                    </small>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="bi bi-check-circle-fill me-1"></i> TẠO CHỨC VỤ NGAY
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

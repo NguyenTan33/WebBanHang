@@ -2,82 +2,347 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Đăng nhập";
+    Layout = null;
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập — Bách Hóa Xanh</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0d3320;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-pill { display: flex; align-items: center; gap: 10px; }
+        .logo-box {
+            background: #fff;
+            color: #1a7c3e;
+            font-weight: 800;
+            font-size: 16px;
+            padding: 5px 12px;
+            border-radius: 8px;
+            letter-spacing: 2px;
+        }
+        .logo-name { color: rgba(255,255,255,0.8); font-size: 13px; }
+        .top-bar-right { color: rgba(255,255,255,0.4); font-size: 12px; }
+
+        /* ===== MAIN LAYOUT ===== */
+        .main {
+            flex: 1;
+            display: flex;
+            align-items: stretch;
+            min-height: 580px;
+        }
+
+        /* ===== LEFT PANEL ===== */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 48px 52px;
+            color: #fff;
+        }
+        .left-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 28px;
+            width: fit-content;
+        }
+        .left-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #4ade80;
+        }
+        .left-h1 {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 16px;
+        }
+        .left-h1 span { color: #4ade80; }
+        .left-sub {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.7;
+            margin-bottom: 36px;
+            max-width: 340px;
+        }
+        .feature-list { display: flex; flex-direction: column; gap: 14px; }
+        .feature-item { display: flex; align-items: center; gap: 12px; }
+        .feature-icon {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            background: rgba(74,222,128,0.12);
+            border: 1px solid rgba(74,222,128,0.2);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            font-size: 15px;
+        }
+        .feature-text { font-size: 13px; color: rgba(255,255,255,0.6); }
+
+        /* ===== RIGHT PANEL ===== */
+        .right-panel {
+            width: 460px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 28px;
+            background: rgba(255,255,255,0.03);
+            border-left: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 380px;
+            overflow: hidden;
+            border: none !important;
+        }
+        .card-head {
+            background: #1a7c3e;
+            padding: 28px 28px 22px;
+        }
+        .card-head h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .card-head p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.65);
+        }
+        .card-body { padding: 26px 28px 30px; }
+
+        /* ===== FORM ===== */
+        .form-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
+        }
+        .input-wrap { position: relative; }
+        .input-wrap .icon {
+            position: absolute;
+            left: 13px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #bbb;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1.5px solid #eee;
+            padding: 11px 14px 11px 38px;
+            font-size: 14px;
+            background: #fafafa;
+            transition: all 0.2s;
+        }
+        .form-control:focus {
+            border-color: #1a7c3e;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(26,124,62,0.1);
+            outline: none;
+        }
+
+        /* ===== REMEMBER + FORGOT ===== */
+        .row-check {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .form-check-input { accent-color: #1a7c3e; }
+        .form-check-label { font-size: 12px; color: #666; }
+        .forgot { font-size: 12px; color: #1a7c3e; text-decoration: none; }
+        .forgot:hover { text-decoration: underline; }
+
+        /* ===== BUTTON ===== */
+        .btn-bhx {
+            width: 100%;
+            background: #1a7c3e;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 13px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.4px;
+            transition: background 0.2s;
+            margin-bottom: 18px;
+        }
+        .btn-bhx:hover { background: #155f30; color: #fff; }
+
+        /* ===== DIVIDER + LINKS ===== */
+        .divider-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .divider-line { flex: 1; height: 1px; background: #f0f0f0; }
+        .divider-text { font-size: 11px; color: #bbb; }
+        .login-links { display: flex; flex-direction: column; gap: 9px; text-align: center; }
+        .login-links a { font-size: 12px; color: #1a7c3e; text-decoration: none; }
+        .login-links a:hover { text-decoration: underline; }
+
+        /* ===== FOOTER ===== */
+        .bhx-footer {
+            background: rgba(0,0,0,0.2);
+            text-align: center;
+            padding: 14px;
+            color: rgba(255,255,255,0.3);
+            font-size: 11px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @@media (max-width: 768px) {
+            .left-panel { display: none; }
+            .right-panel { width: 100%; border-left: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="logo-pill">
+            <div class="logo-box">BHX</div>
+            <span class="logo-name">Bách Hóa Xanh</span>
+        </div>
+        <span class="top-bar-right">Cần hỗ trợ? 1800 6877</span>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
+
+    <div class="main">
+
+        <!-- LEFT -->
+        <div class="left-panel">
+            <div class="left-tag">
+                <div class="left-dot"></div>
+                Hệ thống đang hoạt động
+            </div>
+            <h1 class="left-h1">
+                Chào mừng trở lại<br>với <span>Bách Hóa Xanh</span>
+            </h1>
+            <p class="left-sub">
+                Đăng nhập để quản lý đơn hàng, theo dõi ưu đãi và mua sắm tiện lợi hơn mỗi ngày.
+            </p>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <div class="feature-icon">💳</div>
+                    <span class="feature-text">Thanh toán nhanh chóng &amp; bảo mật</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🛒</div>
+                    <span class="feature-text">Hàng ngàn sản phẩm tươi ngon mỗi ngày</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎁</div>
+                    <span class="feature-text">Ưu đãi dành riêng cho thành viên</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right-panel">
+            <div class="card">
+                <div class="card-head">
+                    <h2>Đăng nhập</h2>
+                    <p>Vui lòng nhập thông tin tài khoản</p>
+                </div>
+                <div class="card-body">
+                    <form id="account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label">Email</label>
+                            <div class="input-wrap">
+                                <span class="icon">✉</span>
+                                <input asp-for="Input.Email" class="form-control"
+                                       autocomplete="username" placeholder="example@email.com" />
+                            </div>
+                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
                         </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-</div>
 
-@section Scripts {
+                        <div class="mb-3">
+                            <label asp-for="Input.Password" class="form-label">Mật khẩu</label>
+                            <div class="input-wrap">
+                                <span class="icon">🔒</span>
+                                <input asp-for="Input.Password" class="form-control"
+                                       autocomplete="current-password" placeholder="••••••••" />
+                            </div>
+                            <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row-check mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" asp-for="Input.RememberMe" />
+                                <label asp-for="Input.RememberMe" class="form-check-label">
+                                    Ghi nhớ đăng nhập
+                                </label>
+                            </div>
+                            <a asp-page="./ForgotPassword" class="forgot">Quên mật khẩu?</a>
+                        </div>
+
+                        <button type="submit" class="btn-bhx">
+                            ➜ &nbsp;Đăng nhập ngay
+                        </button>
+                    </form>
+
+                    <div class="divider-row">
+                        <div class="divider-line"></div>
+                        <span class="divider-text">hoặc</span>
+                        <div class="divider-line"></div>
+                    </div>
+
+                    <div class="login-links">
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
+                            Chưa có tài khoản? Đăng ký ngay
+                        </a>
+                        <a asp-page="./ResendEmailConfirmation">
+                            Gửi lại email xác nhận
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bhx-footer">© 2025 Bách Hóa Xanh. Bảo lưu mọi quyền.</div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
-}
+</body>
+</html>

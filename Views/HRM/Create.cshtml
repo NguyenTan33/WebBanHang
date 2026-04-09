@@ -1,0 +1,45 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityUser
+
+@{
+    ViewData["Title"] = "Thêm nhân viên mới";
+    Layout = "_Layout_HRM";
+}
+
+@section Styles {
+    <style>
+        .form-wrap { max-width: 600px; margin: 0 auto; }
+        .tcard { background: #fff; border-radius: 14px; box-shadow: 0 2px 15px rgba(0,0,0,.05); border: none; }
+        .tcard-body { padding: 30px; }
+        .flabel { font-size: 12px; font-weight: 700; color: #666; margin-bottom: 8px; display: block; text-transform: uppercase; }
+        .finput { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1.5px solid #eee; background: #fafafa; font-size: 14px; outline: none; transition: 0.2s; }
+        .finput:focus { border-color: var(--green-main); background: #fff; box-shadow: 0 0 0 4px rgba(44,158,71,0.1); }
+        .btn-submit { background: linear-gradient(135deg, var(--green-main), var(--green-accent)); color: #fff; border: none; border-radius: 25px; padding: 12px; width: 100%; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(44,158,71,0.3); }
+    </style>
+}
+
+<div class="form-wrap">
+    <a asp-action="Index" class="mb-3 d-inline-block text-decoration-none" style="color: #999; font-weight: 600;">
+        <i class="bi bi-arrow-left"></i> Quay lại danh sách
+    </a>
+
+    <div class="tcard">
+        <div class="tcard-body">
+            <h4 class="mb-4" style="font-weight: 800; color: var(--green-dark);">TẠO TÀI KHOẢN MỚI</h4>
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label class="flabel">Tên đăng nhập / Email</label>
+                    <input name="email" type="email" class="finput" placeholder="nhanvien@bachhoaxanh.com" required />
+                </div>
+                <div class="mb-4">
+                    <label class="flabel">Mật khẩu mặc định</label>
+                    <input name="password" type="password" class="finput" placeholder="••••••••" required />
+                    <small style="color: #bbb; font-size: 11px;">Mật khẩu nên có chữ hoa, chữ thường, số và ký tự đặc biệt.</small>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="bi bi-person-check-fill me-1"></i> XÁC NHẬN THÊM NHÂN VIÊN
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

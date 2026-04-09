@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5wmPtUAohaQ=",
+  "dgSpecHash": "zfYHtalcM24=",
   "success": true,
-  "projectFilePath": "D:\\WebBanHang-5296fd0b38ad9a4f33c408cc9a76879058c794ad\\WebBanHang-5296fd0b38ad9a4f33c408cc9a76879058c794ad\\WebBanHang.csproj",
+  "projectFilePath": "D:\\WebBanHang\\WebBanHang\\WebBanHang.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\minht\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\minht\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

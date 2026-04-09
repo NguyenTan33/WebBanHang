@@ -195,9 +195,13 @@
                             </div>
                         </div>
 
-                        <a asp-controller="Cart" asp-action="ChoosePaymentMethod" class="btn btn-confirm w-100 rounded-pill text-uppercase d-flex align-items-center justify-content-center" style="background-color: #28a745; color: white; height: 50px; text-decoration: none;">
-                            Xác nhận mua hàng
-                        </a>
+                        <form asp-action="ChoosePaymentMethod" asp-controller="Cart" method="post">
+                            <input type="text" name="fullName" required />
+                            <input type="text" name="phone" required />
+                            <input type="text" name="address" required />
+
+                            <button type="submit">Tiếp tục chọn thanh toán</button>
+                        </form>
                     </form>
                 </div>
             </div>

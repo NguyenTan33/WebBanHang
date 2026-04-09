@@ -120,7 +120,7 @@ namespace WebBanHang.Controllers
 
         // Chỉnh lại hàm Checkout để nhận thông tin từ Form
         [HttpPost]
-        public async Task<IActionResult> Checkout(string fullName, string phone, string address)
+        public async Task<IActionResult> Checkout(string fullName, string phone, string address, string paymentMethod)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cart = await _context.Carts
@@ -128,26 +128,41 @@ namespace WebBanHang.Controllers
                 .ThenInclude(ci => ci.Product)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
 
-            if (cart != null && cart.CartItems.Any())
+            if (cart == null || !cart.CartItems.Any()) return RedirectToAction("Index");
+
+            // 1. Tạo đơn hàng mới (Status = 0: Chờ duyệt)
+            var order = new Order
             {
-                // Ở đây m có thể log thông tin ra Console để demo cho thầy xem
-                Console.WriteLine($"Khách hàng: {fullName} - SĐT: {phone} - ĐC: {address}");
+                UserId = userId,
+                FullName = fullName,
+                Phone = phone,
+                Address = address,
+                OrderDate = DateTime.Now,
+                Status = 0, // Quan trọng: Mặc định là chờ duyệt
+                TotalAmount = cart.CartItems.Sum(ci => ci.Quantity * ci.Product.Price),
+                OrderDetails = new List<OrderDetail>()
+            };
 
-                foreach (var item in cart.CartItems)
+            // 2. Chuyển item từ Giỏ hàng sang Chi tiết đơn hàng
+            foreach (var item in cart.CartItems)
+            {
+                order.OrderDetails.Add(new OrderDetail
                 {
-                    if (item.Product != null)
-                    {
-                        item.Product.Amount -= item.Quantity; // Trừ kho thật
-                    }
-                }
-
-                _context.CartItems.RemoveRange(cart.CartItems); // Xóa giỏ
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("CheckoutSuccess");
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    Price = item.Product.Price
+                });
             }
 
-            return RedirectToAction("Index");
+            // 3. Lưu đơn hàng vào DB
+            _context.Orders.Add(order);
+
+            // 4. Xóa giỏ hàng của khách (để khách mua đơn mới được)
+            _context.CartItems.RemoveRange(cart.CartItems);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("CheckoutSuccess");
         }
         // 5. Thanh toán (Trừ kho + Xóa giỏ - Cú chốt demo cho thầy)
         //[HttpPost]
@@ -205,7 +220,8 @@ namespace WebBanHang.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ChoosePaymentMethod()
+        [HttpPost] // Đổi sang HttpPost để nhận data từ form ConfirmOrder
+        public async Task<IActionResult> ChoosePaymentMethod(string fullName, string phone, string address)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cart = await _context.Carts
@@ -215,11 +231,11 @@ namespace WebBanHang.Controllers
 
             if (cart == null || !cart.CartItems.Any()) return RedirectToAction("Index");
 
-            // Tính tổng tiền đơn hàng
-            decimal totalAmount = cart.CartItems.Sum(item => item.Quantity * item.Product.Price);
-
-            // Gửi sang View
-            ViewBag.TotalAmount = totalAmount;
+            // Gửi ngược lại đống info này sang View ChoosePaymentMethod
+            ViewBag.FullName = fullName;
+            ViewBag.Phone = phone;
+            ViewBag.Address = address;
+            ViewBag.TotalAmount = cart.CartItems.Sum(item => item.Quantity * item.Product.Price);
 
             return View();
         }

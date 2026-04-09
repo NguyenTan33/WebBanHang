@@ -9,17 +9,21 @@
         <div class="card-body">
             <form asp-action="Checkout" method="post" id="paymentForm">
 
-                <div class="form-check border rounded p-3 mb-3 d-flex align-items-center cursor-pointer">
+                <input type="hidden" name="fullName" value="@ViewBag.FullName" />
+                <input type="hidden" name="phone" value="@ViewBag.Phone" />
+                <input type="hidden" name="address" value="@ViewBag.Address" />
+
+                <div class="form-check border rounded p-3 mb-3 d-flex align-items-center cursor-pointer" onclick="document.getElementById('cod').checked = true; toggleQR(false)">
                     <input class="form-check-input ms-2" type="radio" name="paymentMethod" id="cod" value="COD" checked onclick="toggleQR(false)">
-                    <label class="form-check-label ms-3 w-100" for="cod">
+                    <label class="form-check-label ms-3 w-100" for="cod" style="cursor: pointer;">
                         <strong>Thanh toán tiền mặt khi nhận hàng</strong>
                         <p class="text-muted small mb-0">Phí thu hộ: 0đ</p>
                     </label>
                 </div>
 
-                <div class="form-check border rounded p-3 mb-3 d-flex align-items-center cursor-pointer">
+                <div class="form-check border rounded p-3 mb-3 d-flex align-items-center cursor-pointer" onclick="document.getElementById('qrcode').checked = true; toggleQR(true)">
                     <input class="form-check-input ms-2" type="radio" name="paymentMethod" id="qrcode" value="QRCode" onclick="toggleQR(true)">
-                    <label class="form-check-label ms-3 w-100" for="qrcode">
+                    <label class="form-check-label ms-3 w-100" for="qrcode" style="cursor: pointer;">
                         <strong>Thanh toán qua mã QR</strong>
                         <p class="text-muted small mb-0">Hỗ trợ các ví điện tử & Ngân hàng</p>
                     </label>
@@ -39,7 +43,7 @@
                     </h4>
                 </div>
 
-                <button type="submit" class="btn btn-success btn-lg w-100">HOÀN TẤT ĐẶT HÀNG</button>
+                <button type="submit" id="btnSubmit" class="btn btn-success btn-lg w-100">HOÀN TẤT ĐẶT HÀNG</button>
             </form>
         </div>
     </div>
@@ -47,12 +51,30 @@
 
 @section Scripts {
     <script>
+        let paymentTimeout;
+
         function toggleQR(show) {
             const qrArea = document.getElementById('qrArea');
+            const btnSubmit = document.getElementById('btnSubmit');
+
             if (show) {
                 qrArea.classList.remove('d-none');
+
+                // GIẢ LẬP: Sau 30 giây tự động xác nhận đơn hàng (như m yêu cầu)
+                btnSubmit.innerHTML = "Đang chờ thanh toán (30s)...";
+                btnSubmit.classList.replace('btn-success', 'btn-warning');
+
+                paymentTimeout = setTimeout(function() {
+                    document.getElementById('paymentForm').submit();
+                }, 30000);
+
             } else {
                 qrArea.classList.add('d-none');
+                btnSubmit.innerHTML = "HOÀN TẤT ĐẶT HÀNG";
+                btnSubmit.classList.replace('btn-warning', 'btn-success');
+
+                // Hủy bộ đếm nếu khách chọn lại COD
+                if (paymentTimeout) clearTimeout(paymentTimeout);
             }
         }
     </script>

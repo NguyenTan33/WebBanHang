@@ -1,0 +1,36 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+
+@{
+    ViewData["Title"] = "Xác nhận xóa chức vụ";
+    Layout = "_AdminLayout";
+}
+
+<div style="max-width: 500px; margin: 60px auto; text-align: center;">
+    <div style="background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+        <div style="width: 80px; height: 80px; background: #fff0f0; color: #e82828; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 20px;">
+            <i class="bi bi-exclamation-octagon-fill"></i>
+        </div>
+        
+        <h3 style="font-weight: 900; color: #333;">Xóa chức vụ?</h3>
+        <p style="color: #888; font-size: 14px; line-height: 1.6;">
+            Bạn đang chuẩn bị xóa chức vụ: <strong style="color: #e82828;">@Model.Name</strong><br />
+            Hành động này sẽ gỡ bỏ quyền truy cập của tất cả người dùng thuộc nhóm này.
+        </p>
+
+        <div style="background: #f9f9f9; padding: 12px; border-radius: 10px; margin: 20px 0; font-family: monospace; font-size: 12px; color: #999;">
+            ID: @Model.Id
+        </div>
+
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn" style="background: #dc3545; color: #fff; border-radius: 25px; padding: 13px; font-weight: 700; border: none;">
+                    XÁC NHẬN XÓA VĨNH VIỄN
+                </button>
+                <a asp-action="Index" class="btn" style="background: #eee; color: #666; border-radius: 25px; padding: 13px; font-weight: 700; text-decoration: none;">
+                    HỦY BỎ
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

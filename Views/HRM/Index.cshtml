@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@model IEnumerable<IdentityUser>
+
+@{
+    ViewData["Title"] = "Danh sách nhân sự";
+    Layout = "_Layout_HRM";
+}
+
+@section Styles {
+    <style>
+        .hrm-card { background: #fff; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.08); overflow: hidden; border: none; }
+        .hrm-table { width: 100%; border-collapse: collapse; }
+        .hrm-table th { background: #f9f9f9; padding: 15px 20px; text-align: left; font-size: 11px; text-transform: uppercase; color: #aaa; letter-spacing: 1px; }
+        .hrm-table td { padding: 18px 20px; border-bottom: 1px solid #eee; font-size: 14px; }
+        
+        .u-info { display: flex; align-items: center; gap: 12px; }
+        .u-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--green-main); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+        
+        .fselect-sm { border-radius: 20px; font-size: 12px; padding: 5px 10px; border: 1.5px solid #ececec; outline: none; transition: 0.2s; }
+        .fselect-sm:focus { border-color: var(--green-main); }
+        
+        .btn-del-outline { color: #ccc; border: none; background: none; font-size: 18px; transition: 0.2s; cursor: pointer; }
+        .btn-del-outline:hover { color: #dc3545; }
+    </style>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 style="font-weight: 900; color: var(--green-dark); margin: 0;">
+        <i class="bi bi-people-fill me-2"></i> QUẢN LÝ NHÂN SỰ
+    </h2>
+    <a asp-action="Create" class="btn" style="background: var(--green-main); color: #fff; border-radius: 25px; padding: 8px 25px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 12px rgba(44,158,71,0.2);">
+        <i class="bi bi-person-plus-fill me-1"></i> THÊM NHÂN VIÊN
+    </a>
+</div>
+
+<div class="hrm-card">
+    <table class="hrm-table">
+        <thead>
+            <tr>
+                <th>Hồ sơ nhân viên</th>
+                <th>Thông tin liên lạc</th>
+                <th style="width: 200px;">Gán chức vụ (Role)</th>
+                <th style="text-align: center;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                var userRoles = await UserManager.GetRolesAsync(user);
+                var currentRole = userRoles.FirstOrDefault();
+                <tr>
+                    <td>
+                        <div class="u-info">
+                            <div class="u-avatar">@user.UserName.Substring(0, 1).ToUpper()</div>
+                            <div>
+                                <div style="font-weight: 800; color: #333;">@user.UserName</div>
+                                <div style="font-size: 11px; color: #999;">Mã NV: @user.Id.Substring(0, 8)</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">@user.Email</div>
+                        <div style="font-size: 12px; color: #888;">@(user.PhoneNumber ?? "Chưa có SĐT")</div>
+                    </td>
+                    <td>
+                        <form asp-action="AssignRole" method="post">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <select name="roleName" class="fselect-sm w-100" onchange="this.form.submit()">
+                                <option value="">-- Chọn chức vụ --</option>
+                                @foreach (var role in ViewBag.AllRoles as List<IdentityRole>)
+                                {
+                                    <option value="@role.Name" selected="@(role.Name == currentRole)">@role.Name</option>
+                                }
+                            </select>
+                        </form>
+                    </td>
+                    <td style="text-align: center;">
+                        <a asp-action="Delete" asp-route-id="@user.Id" class="btn-del-outline" title="Xóa nhân sự">
+                            <i class="bi bi-trash3-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

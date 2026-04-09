@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Chọn phương thức thanh toán";
+}
+
+<div class="container mt-5" style="max-width: 600px;">
+    <h3 class="text-success mb-4 text-center">Hình thức thanh toán</h3>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Checkout" method="post" id="paymentForm">
+
+                <div class="form-check border rounded p-3 mb-3 d-flex align-items-center cursor-pointer">
+                    <input class="form-check-input ms-2" type="radio" name="paymentMethod" id="cod" value="COD" checked onclick="toggleQR(false)">
+                    <label class="form-check-label ms-3 w-100" for="cod">
+                        <strong>Thanh toán tiền mặt khi nhận hàng</strong>
+                        <p class="text-muted small mb-0">Phí thu hộ: 0đ</p>
+                    </label>
+                </div>
+
+                <div class="form-check border rounded p-3 mb-3 d-flex align-items-center cursor-pointer">
+                    <input class="form-check-input ms-2" type="radio" name="paymentMethod" id="qrcode" value="QRCode" onclick="toggleQR(true)">
+                    <label class="form-check-label ms-3 w-100" for="qrcode">
+                        <strong>Thanh toán qua mã QR</strong>
+                        <p class="text-muted small mb-0">Hỗ trợ các ví điện tử & Ngân hàng</p>
+                    </label>
+                </div>
+
+                <div id="qrArea" class="text-center my-4 d-none">
+                    <p class="text-primary font-weight-bold">Quét mã VietinBank để thanh toán</p>
+
+                    <img src="https://img.vietqr.io/image/ICB-0923045530-compact2.jpg?amount=@ViewBag.TotalAmount&addInfo=Thanh toan don hang BHX"
+                         id="qrImage"
+                         class="img-fluid border p-2 shadow"
+                         style="max-width: 280px;"
+                         alt="Mã QR VietinBank" />
+
+                    <h4 class="mt-3 text-danger">
+                        Số tiền: @(ViewBag.TotalAmount?.ToString("N0")) VNĐ
+                    </h4>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100">HOÀN TẤT ĐẶT HÀNG</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleQR(show) {
+            const qrArea = document.getElementById('qrArea');
+            if (show) {
+                qrArea.classList.remove('d-none');
+            } else {
+                qrArea.classList.add('d-none');
+            }
+        }
+    </script>
+}
+
+<style>
+    .cursor-pointer {
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .cursor-pointer:hover {
+            background-color: #f8f9fa;
+        }
+
+    .form-check-input {
+        width: 20px;
+        height: 20px;
+    }
+</style>

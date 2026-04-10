@@ -61,40 +61,40 @@
                 <div class="flash-item-name">Tất cả</div>
             </div>
         </a>
-        <a asp-action="Index" asp-route-categoryId="5" class="text-decoration-none text-dark">
+        <a asp-action="Index" asp-route-categoryId="1" class="text-decoration-none text-dark">
             <div class="flash-item text-center">
                 <div class="flash-item-img">🥬<span class="flash-item-badge">-28%</span></div>
                 <div class="flash-item-name">Rau Củ</div>
             </div>
         </a>
-        <a asp-action="Index" asp-route-categoryId="1" class="text-decoration-none text-dark">
+        <a asp-action="Index" asp-route-categoryId="2" class="text-decoration-none text-dark">
             <div class="flash-item text-center">
                 <div class="flash-item-img">🥩<span class="flash-item-badge">-15%</span></div>
                 <div class="flash-item-name">Thịt tươi</div>
             </div>
         </a>
-        <a asp-action="Index" asp-route-categoryId="6" class="text-decoration-none text-dark">
+        <a asp-action="Index" asp-route-categoryId="3" class="text-decoration-none text-dark">
             <div class="flash-item text-center">
                 <div class="flash-item-img">🍎<span class="flash-item-badge">-10%</span></div>
                 <div class="flash-item-name">Trái cây</div>
             </div>
         </a>
 
-        <a asp-action="Index" asp-route-categoryId="2" class="text-decoration-none text-dark">
+        <a asp-action="Index" asp-route-categoryId="4" class="text-decoration-none text-dark">
             <div class="flash-item text-center">
                 <div class="flash-item-img">🦐<span class="flash-item-badge">-5%</span></div>
                 <div class="flash-item-name">Thủy Hải sản</div>
             </div>
         </a>
 
-        <a asp-action="Index" asp-route-categoryId="9" class="text-decoration-none text-dark">
+        <a asp-action="Index" asp-route-categoryId="5" class="text-decoration-none text-dark">
             <div class="flash-item text-center">
                 <div class="flash-item-img">🥤<span class="flash-item-badge">Mới</span></div>
                 <div class="flash-item-name">Đồ uống</div>
             </div>
         </a>
 
-        <a asp-action="Index" asp-route-categoryId="11" class="text-decoration-none text-dark">
+        <a asp-action="Index" asp-route-categoryId="6" class="text-decoration-none text-dark">
             <div class="flash-item text-center">
                 <div class="flash-item-img">🍪<span class="flash-item-badge">Hot</span></div>
                 <div class="flash-item-name">Bánh kẹo</div>
@@ -153,6 +153,8 @@ else
         <p>Không tìm thấy sản phẩm!</p>
     </div>
 }
+
+<a asp-controller="Cart" asp-action="Tracking" asp-route-id="5" class="btn btn-info">Tracking</a>
 
 <div class="modal fade" id="productQuickView" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

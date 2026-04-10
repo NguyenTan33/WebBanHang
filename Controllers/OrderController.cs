@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebBanHang.Data;
+using WebBanHang.Models;
 
 namespace WebBanHang.Controllers
 {
@@ -129,5 +130,6 @@ namespace WebBanHang.Controllers
 
             return View(order);
         }
+        
     }
 }

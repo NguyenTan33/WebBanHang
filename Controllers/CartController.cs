@@ -240,6 +240,23 @@ namespace WebBanHang.Controllers
 
             return View();
         }
+        // GET: /Cart/Tracking?phone=09xxx
+        public async Task<IActionResult> Tracking(string phone)
+        {
+            if (string.IsNullOrEmpty(phone))
+            {
+                return View(new List<Order>());
+            }
+
+            // Lấy đơn hàng theo số điện thoại
+            var orders = await _context.Orders
+                .Where(o => o.Phone == phone)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
+
+            ViewBag.Phone = phone;
+            return View(orders);
+        }
     }
 
 }
